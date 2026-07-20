@@ -40,7 +40,6 @@
             opacity: 1; transform: translate(0) scale(1);
         }
 
-        /* Utilidad para retrasar animaciones en grupo */
         .delay-1 { transition-delay: 0.2s; }
         .delay-2 { transition-delay: 0.4s; }
         .delay-3 { transition-delay: 0.6s; }
@@ -48,16 +47,27 @@
         /* ====== SOBRE LUMINOSO ====== */
         #envelope-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-env);
+            /* Imagen de fondo solicitada */
+            background: url('assets/fondo.jpg') center/cover no-repeat, var(--bg-env);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 1000; transition: opacity 1.2s ease-in-out, visibility 1.2s;
             overflow: hidden;
         }
         #envelope-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
+        /* Capa oscura sutil por si el fondo.jpg es muy claro y queremos que resalte el sobre */
+        #envelope-screen::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.15);
+            z-index: 0;
+            pointer-events: none;
+        }
+
         .env-star {
             position: absolute; border-radius: 50%; background: #fff;
             animation: envTwinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+            z-index: 1;
         }
         @keyframes envTwinkle {
             0%, 100% { opacity: 0.15; transform: scale(1); }
@@ -133,7 +143,8 @@
 
         .hint-text {
             margin-top: 30px; text-align: center; font-family: 'Cinzel', serif; font-size: 10px;
-            letter-spacing: 4px; color: var(--text-lilac); animation: pulse 2.5s infinite; text-transform: uppercase; width: 310px; font-weight: 700;
+            letter-spacing: 4px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.4); 
+            animation: pulse 2.5s infinite; text-transform: uppercase; width: 310px; font-weight: 700; z-index: 10;
         }
 
         /* ====== MAIN ====== */
@@ -147,44 +158,44 @@
 
         /* ====== LINTERNAS FIJAS EN TODA LA PANTALLA ====== */
         #lanterns-container {
-            position: fixed; /* Fijo para que se vean siempre al scrollear */
+            position: fixed; 
             top: 0; left: 0; width: 100vw; height: 100vh;
-            overflow: hidden; pointer-events: none; z-index: 1;
+            overflow: hidden; pointer-events: none; 
+            z-index: 15; /* POR ENCIMA de los colores de fondo */
         }
         .floating-lantern {
             position: absolute;
             background: radial-gradient(circle at 50% 70%, #fff9d6 0%, #ffdf70 40%, #ffa000 80%, #d86c00 100%);
             border-radius: 4px 4px 2px 2px;
-            box-shadow: 0 0 15px rgba(255, 223, 112, 0.7), 0 0 30px rgba(255, 160, 0, 0.4);
+            box-shadow: 0 0 15px rgba(255, 223, 112, 0.6), 0 0 30px rgba(255, 160, 0, 0.3);
             pointer-events: none; opacity: 0;
             animation: float-lantern infinite ease-in;
-            z-index: 1;
+            z-index: 15;
         }
         .floating-lantern::after {
             content: '';
             position: absolute;
             bottom: -2px; left: 10%; width: 80%; height: 2px;
-            background: #4a2c5d; opacity: 0.5;
+            background: #4a2c5d; opacity: 0.4;
         }
         @keyframes float-lantern {
             0% { transform: translateY(110vh) rotate(-3deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.6; }
-            50% { transform: translateY(40vh) rotate(3deg) scale(1.1); opacity: 0.8; }
-            90% { opacity: 0.6; }
+            10% { opacity: 0.3; } /* Más sutiles para que no tapen información */
+            50% { transform: translateY(40vh) rotate(3deg) scale(1.1); opacity: 0.55; }
+            90% { opacity: 0.3; }
             100% { transform: translateY(-20vh) rotate(-3deg) scale(0.9); opacity: 0; }
         }
 
-        /* ====== SECCIONES DE COLOR (Flujo suave sin cajas) ====== */
+        /* ====== SECCIONES DE COLOR SÓLIDAS E INTERCALADAS ====== */
         .full-section {
             width: 100%;
-            padding: 60px 20px;
+            padding: 80px 20px;
             position: relative;
             z-index: 5;
         }
-        /* Degradados que inician y terminan en el color de fondo para fusionarse perfectamente */
-        .bg-lilac { background: linear-gradient(to bottom, var(--bg-main) 0%, #ecd1f5 50%, var(--bg-main) 100%); }
-        .bg-pink { background: linear-gradient(to bottom, var(--bg-main) 0%, #f9dbe8 50%, var(--bg-main) 100%); }
-        .bg-gold { background: linear-gradient(to bottom, var(--bg-main) 0%, #fef1cf 50%, var(--bg-main) 100%); }
+        .bg-lilac { background-color: #f2e3f7; }
+        .bg-pink { background-color: #fceaf1; }
+        .bg-gold { background-color: #fdf4da; }
 
         .seccion-abierta {
             width: 100%;
@@ -192,6 +203,7 @@
             text-align: center;
             margin: 0 auto;
             position: relative;
+            z-index: 10;
         }
 
         /* ====== ESTILOS DE ELEMENTOS ====== */
@@ -215,12 +227,12 @@
         .section-heading {
             font-family: 'Bodoni Moda', serif; font-style: italic; font-weight: 600;
             color: var(--text-lilac); text-transform: none; line-height: 1.3;
-            font-size: 32px; letter-spacing: 1px; margin-bottom: 20px;
+            font-size: 36px; letter-spacing: 1px; margin-bottom: 25px;
         }
         .section-heading-sm {
             font-family: 'Bodoni Moda', serif; font-style: italic; font-weight: 600;
             color: var(--text-pink); text-transform: none; line-height: 1.3;
-            font-size: 24px; letter-spacing: 1px; margin-bottom: 15px;
+            font-size: 26px; letter-spacing: 1px; margin-bottom: 15px;
         }
         .section-tag { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 18px; letter-spacing: 3px; color: var(--text-rose); font-weight: 500; margin-bottom: 10px; }
         
@@ -229,7 +241,7 @@
             margin-bottom:20px; line-height:1;
             transform: translateX(-10px);
             text-align: center;
-            text-shadow: 0 4px 15px rgba(150, 97, 168, 0.2);
+            text-shadow: 0 4px 15px rgba(150, 97, 168, 0.15);
         }
         
         .phrase { font-family:'EB Garamond','Cormorant Garamond',serif;font-style:italic;font-size:21px;color:var(--text-deep);line-height:1.7;margin-bottom:25px;padding:0 10px;font-weight:400; }
@@ -237,7 +249,7 @@
         .info-label { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 4px; color: var(--text-rose); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
         .info-block { margin-bottom: 40px; position: relative; }
 
-        .divider-ornate { display:flex;align-items:center;justify-content:center;gap:12px;margin:45px auto; width: 100%; max-width: 400px;}
+        .divider-ornate { display:flex;align-items:center;justify-content:center;gap:12px;margin:50px auto; width: 100%; max-width: 400px;}
         .divider-ornate::before,.divider-ornate::after { content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(212, 175, 55, 0.6)); }
         .divider-ornate::after { background:linear-gradient(to left,transparent,rgba(212, 175, 55, 0.6)); }
         .divider-ornate-diamond { width:8px;height:8px;background:var(--text-lilac);transform:rotate(45deg);flex-shrink:0; }
@@ -245,14 +257,14 @@
         /* ====== FOTOS DISTRIBUIDAS ====== */
         .scattered-photo {
             width: 100%; border-radius: 12px; overflow: hidden; margin: 45px 0;
-            box-shadow: 0 20px 40px rgba(74, 44, 93, 0.2);
+            box-shadow: 0 20px 40px rgba(74, 44, 93, 0.15);
             position: relative;
         }
         .scattered-photo img { width: 100%; display: block; }
         .scattered-photo::after { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(255,255,255,0.7); pointer-events: none; border-radius: 8px; }
 
         /* ====== COUNTDOWN ====== */
-        .countdown-grid { display:flex;justify-content:center;gap:15px;margin:20px auto 10px auto;max-width:380px; }
+        .countdown-grid { display:flex;justify-content:center;gap:15px;margin:25px auto 10px auto;max-width:380px; }
         .countdown-item { flex:1; display:flex; flex-direction:column; align-items:center; background: transparent; }
         .countdown-number { font-family:'Cinzel',serif;font-size:32px;font-weight:600;color:var(--text-lilac);display:block; line-height: 1.2; text-shadow: 0 2px 10px rgba(150, 97, 168, 0.2);}
         .countdown-label { font-family:'Montserrat',sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--text-muted);font-weight:600; margin-top: 5px;}
@@ -260,8 +272,8 @@
         /* ====== CALENDARIO RESPONSIVO ====== */
         .calendar-widget { margin-top:25px; width: 100%; max-width: 360px; margin-left: auto; margin-right: auto; padding: 10px;}
         .calendar-header { padding:10px 0 20px; text-align:center; color: var(--text-deep); position:relative; }
-        .calendar-year { font-family:'Cinzel',serif; font-size:12px; letter-spacing:6px; text-transform:uppercase; font-weight: 700; color: var(--text-rose);}
-        .calendar-month { margin-top:8px; font-family: 'Pinyon Script', cursive; font-size:48px; font-weight:400; letter-spacing:1px; color:var(--text-lilac); line-height: 1; }
+        .calendar-year { font-family:'Cinzel',serif; font-size:13px; letter-spacing:6px; text-transform:uppercase; font-weight: 700; color: var(--text-rose);}
+        .calendar-month { margin-top:8px; font-family: 'Pinyon Script', cursive; font-size:52px; font-weight:400; letter-spacing:1px; color:var(--text-lilac); line-height: 1; }
         .calendar-days-header { display:grid; grid-template-columns:repeat(7,1fr); margin-bottom:15px; gap: 4px; }
         .calendar-day-name { text-align:center; font-family:'Montserrat', sans-serif; font-size:10px; letter-spacing:2px; color:var(--text-muted); text-transform:uppercase; font-weight:700; }
         .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
@@ -275,7 +287,7 @@
             border:1px solid rgba(212,175,55,0.6); border-radius:30px; padding:16px 20px;
             background: transparent; color:var(--text-deep); display:flex; align-items:center; justify-content:center; gap:12px;
             cursor:pointer; transition:.35s ease; font-family:'Cinzel',serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; font-weight:700;
-            position: relative; overflow: hidden;
+            position: relative; overflow: hidden; z-index: 20; /* Sobre las linternas */
         }
         .btn-accion::before {
             content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
@@ -285,7 +297,7 @@
         .btn-accion:hover { border-color: var(--text-lilac); color: var(--text-lilac); transform:translateY(-2px); box-shadow: 0 10px 20px rgba(150,97,168,0.1); }
         .btn-accion svg { width:18px; height:18px; fill:currentColor; flex-shrink:0; }
 
-        .map-wrapper { width:100%;height:220px;border-radius:12px;overflow:hidden;border:1px solid rgba(212,175,55,0.4); margin-bottom: 20px; box-shadow: 0 15px 35px rgba(74, 44, 93, 0.15); }
+        .map-wrapper { width:100%;height:220px;border-radius:12px;overflow:hidden;border:1px solid rgba(212,175,55,0.4); margin-bottom: 20px; box-shadow: 0 15px 35px rgba(74, 44, 93, 0.15); position: relative; z-index: 20;}
 
         /* ====== MESA DE REGALOS ====== */
         .regalo-container { text-align: center; margin-top: 30px; }
@@ -303,8 +315,8 @@
         .rsvp-input-label { font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--text-lilac);text-transform:uppercase;font-weight:700;display:block;margin-bottom:10px; text-align:left;}
         .rsvp-input {
             width:100%;padding:16px 20px;font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;
-            color:var(--text-deep);background:rgba(255,255,255,0.6);border:1px solid rgba(212,175,55,0.6);
-            border-radius:8px;outline:none;transition:border-color 0.3s,box-shadow 0.3s;
+            color:var(--text-deep);background:rgba(255,255,255,0.7);border:1px solid rgba(212,175,55,0.6);
+            border-radius:8px;outline:none;transition:border-color 0.3s,box-shadow 0.3s; position: relative; z-index: 20;
         }
         .rsvp-input::placeholder { color: rgba(110,84,122,0.5); }
         select.rsvp-input { cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23d4af37%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 20px top 50%; background-size: 12px auto; }
@@ -317,7 +329,7 @@
             color:#fff;border:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:4px;
             text-transform:uppercase;cursor:pointer;font-weight:700;border-radius:30px;
             box-shadow:0 10px 25px rgba(74,44,93,0.3);transition:all 0.4s ease;
-            position:relative;overflow:hidden; margin-top: 10px;
+            position:relative;overflow:hidden; margin-top: 10px; z-index: 20;
         }
         .btn-confirmar::before { content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transition:left 0.5s; }
         .btn-confirmar:hover::before { left:100%; }
@@ -325,7 +337,7 @@
         .btn-confirmar svg { width:18px;height:18px;fill:#fff;flex-shrink:0; }
 
         /* ====== GLITTER Y MUSICA ====== */
-        #glitter-canvas { position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:3;opacity:0;transition:opacity 0.8s; }
+        #glitter-canvas { position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:16;opacity:0;transition:opacity 0.8s; }
         #glitter-canvas.visible { opacity:1; }
 
         #music-control-btn {
@@ -339,14 +351,14 @@
         #music-control-btn.visible { opacity:1;visibility:visible; }
         #music-control-btn svg { width:24px;height:24px; fill:var(--text-lilac); }
 
-        .invitation-footer { font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:var(--text-muted);margin-top:40px;font-weight:700;text-transform:uppercase; text-align: center; width: 100%; }
+        .invitation-footer { font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:var(--text-muted);margin-top:40px;font-weight:700;text-transform:uppercase; text-align: center; width: 100%; position: relative; z-index: 20;}
 
         @keyframes pulse { 0%,100%{opacity:0.5}50%{opacity:1} }
         @media(max-width:400px){
             .main-title{font-size:80px;}
             .phrase { font-size: 19px; }
-            .section-heading { font-size: 28px; }
-            .full-section { padding: 40px 15px; }
+            .section-heading { font-size: 30px; }
+            .full-section { padding: 50px 15px; }
         }
     </style>
 </head>
@@ -435,10 +447,10 @@
     </div>
 
     <main id="main-invitation">
-        <!-- Linternas fijas globales -->
+        <!-- Linternas fijas globales (por encima de los colores de sección) -->
         <div id="lanterns-container"></div>
 
-        <!-- SECCIÓN 1: BIENVENIDA -->
+        <!-- SECCIÓN 1: BIENVENIDA (Fondo neutro base) -->
         <section class="full-section" style="padding-top: 80px;">
             <div class="seccion-abierta">
                 <div class="frame-sparkle"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.9"/></svg></div>
@@ -453,11 +465,11 @@
                 
                 <p class="phrase anim-fade-up delay-2" style="margin-top: 15px;">"Con la bendición de Dios y el amor que mi familia me ha dado, me siento feliz de llegar a este momento de mi vida, el momento que dejará atrás mi infancia y comenzaré una nueva etapa; es mi deseo que compartan conmigo la alegría de mis XV años."</p>
                 
-                <div class="divider-ornate anim-fade-left"><div class="divider-ornate-diamond"></div></div>
+                <div class="divider-ornate anim-fade-left delay-3"><div class="divider-ornate-diamond"></div></div>
             </div>
         </section>
 
-        <!-- SECCIÓN 2: FAMILIA (FONDO LILA DIFUMINADO) -->
+        <!-- SECCIÓN 2: FAMILIA (FONDO LILA SÓLIDO) -->
         <section class="full-section bg-lilac">
             <div class="seccion-abierta">
                 <div class="info-block anim-fade-right">
@@ -479,11 +491,11 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 3: FECHA Y CUENTA REGRESIVA (FONDO ROSA DIFUMINADO) -->
+        <!-- SECCIÓN 3: FECHA Y CUENTA REGRESIVA (FONDO ROSA SÓLIDO) -->
         <section class="full-section bg-pink">
             <div class="seccion-abierta">
                 <div class="section-heading anim-fade-up">La Gran Fecha</div>
-                <div class="anim-zoom delay-1" style="font-family:'Cinzel',serif;font-size:34px;font-weight:700;color:var(--text-deep);letter-spacing:4px; text-shadow: 0 2px 5px rgba(212,175,55,0.2);">17 · OCT · 2026</div>
+                <div class="anim-zoom delay-1" style="font-family:'Cinzel',serif;font-size:36px;font-weight:700;color:var(--text-deep);letter-spacing:4px; text-shadow: 0 2px 5px rgba(212,175,55,0.2);">17 · OCT · 2026</div>
                 <div class="anim-fade-up delay-2" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;color:var(--text-muted);margin-top:5px;font-weight:600;">Sábado</div>
                 
                 <div class="calendar-widget anim-zoom delay-3">
@@ -508,7 +520,7 @@
                     Agregar a mi Calendario
                 </button>
 
-                <div class="section-heading-sm anim-fade-up" style="margin-top: 50px;">Faltan solo...</div>
+                <div class="section-heading-sm anim-fade-up" style="margin-top: 60px;">Faltan solo...</div>
                 <div class="countdown-grid anim-zoom" id="countdown-timer">
                     <div class="countdown-item"><span class="countdown-number" id="days">00</span><span class="countdown-label">Días</span></div>
                     <div class="countdown-item"><span class="countdown-number" id="hours">00</span><span class="countdown-label">Hrs</span></div>
@@ -538,7 +550,7 @@
 
                 <div class="divider-ornate anim-fade-right"><div class="divider-ornate-diamond"></div></div>
 
-                <div style="margin-top: 30px;">
+                <div style="margin-top: 40px;">
                     <div class="anim-fade-left delay-1" style="font-family:'Cinzel',serif;font-size:16px;color:var(--text-lilac);margin-bottom:5px;letter-spacing:3px;font-weight:700;text-transform:uppercase;">Recepción</div>
                     <div class="anim-fade-right delay-2" style="font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;color:var(--text-deep);margin-bottom:5px;font-weight:600;">Calle 18 #16 Col Manuel Nieto</div>
                     <div class="anim-zoom delay-3" style="font-family:'Cinzel',serif;font-size:13px;color:var(--text-rose);margin-bottom:15px;letter-spacing:3px;font-weight:700;">8:30 P.M.</div>
@@ -553,11 +565,11 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 5: VESTIMENTA Y REGALOS (FONDO DORADO/AMARILLO PASTEL) -->
+        <!-- SECCIÓN 5: VESTIMENTA Y REGALOS (FONDO DORADO PASTEL) -->
         <section class="full-section bg-gold">
             <div class="seccion-abierta">
                 <div class="section-heading anim-fade-down">Código de Vestimenta</div>
-                <div class="anim-zoom delay-1" style="font-family:'Cinzel',serif;font-size:30px;font-weight:700;letter-spacing:8px;color:var(--text-deep);margin-top:5px;">Formal</div>
+                <div class="anim-zoom delay-1" style="font-family:'Cinzel',serif;font-size:32px;font-weight:700;letter-spacing:8px;color:var(--text-deep);margin-top:5px;">Formal</div>
                 <div class="anim-fade-up delay-2" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--text-lilac);font-weight:600;margin-top:12px; padding: 0 15px;">Se reserva el color Lila y Morado para la festejada.</div>
 
                 <div class="scattered-photo anim-zoom delay-3" style="margin: 50px 0;">
@@ -566,7 +578,7 @@
 
                 <div class="divider-ornate anim-fade-left"><div class="divider-ornate-diamond"></div></div>
 
-                <div class="section-heading anim-fade-right" style="margin-top: 30px;">Mesa de Regalos</div>
+                <div class="section-heading anim-fade-right" style="margin-top: 40px;">Mesa de Regalos</div>
                 <p class="anim-fade-left delay-1" style="font-family: 'Cormorant Garamond', serif; font-size: 21px; color: var(--text-deep); line-height: 1.6; margin-bottom: 35px;">
                     El mejor regalo que puedo recibir es contar con tu presencia en este día tan mágico. Pero si deseas tener un detalle hermoso conmigo, puedes hacerlo de las siguientes maneras:
                 </p>
@@ -595,8 +607,8 @@
             </div>
         </section>
 
-        <!-- SECCIÓN 6: CONFIRMACIÓN Y DESEOS (FONDO LILA DE NUEVO) -->
-        <section class="full-section bg-lilac">
+        <!-- SECCIÓN 6: CONFIRMACIÓN Y DESEOS (FONDO ROSA DE NUEVO) -->
+        <section class="full-section bg-pink">
             <div class="seccion-abierta">
                 <div class="section-heading anim-fade-down">Confirmación</div>
                 <p class="rsvp-intro anim-fade-up delay-1">Por favor confírmame tu asistencia, será un honor contar con tu presencia.</p>
@@ -621,7 +633,7 @@
 
                 <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
 
-                <div class="section-heading anim-fade-down">Buenos Deseos</div>
+                <div class="section-heading anim-fade-down" style="margin-top: 40px;">Buenos Deseos</div>
                 <p class="rsvp-intro anim-fade-up delay-1">Deja un mensaje para Johari. Tu mensaje se guardará con cariño en esta nueva etapa.</p>
                 <form id="wish-form" style="text-align: left;" class="anim-fade-up delay-2">
                     <div class="rsvp-input-wrap">
@@ -647,7 +659,7 @@
     <script>
         let isPlaying = false;
         let pasesAsignados = 0; 
-        const NUMERO_WHATSAPP = "522294084815"; // Número actualizado para Johari
+        const NUMERO_WHATSAPP = "522294084815"; 
 
         /* ===== GLITTER MAGICO ===== */
         const canvas = document.getElementById('glitter-canvas');
@@ -705,7 +717,7 @@
         function startGlitter(){canvas.classList.add('visible');drawGlitter();setInterval(spawnAmbient,350);}
         document.addEventListener('click',e=>{if(document.body.classList.contains('content-active'))createGlitterBurst(e.clientX,e.clientY);});
 
-        /* ===== SCROLL OBSERVER (NUEVAS ANIMACIONES) ===== */
+        /* ===== SCROLL OBSERVER (ANIMACIONES) ===== */
         function initScrollAnimations(){
             const elements = document.querySelectorAll('.anim-fade-up, .anim-fade-down, .anim-fade-left, .anim-fade-right, .anim-zoom');
             const observer = new IntersectionObserver((entries) => {
@@ -744,7 +756,6 @@
                     c.appendChild(s);
                 }
             }
-            // Linternas de la portada inicial
             createLanterns('env-lanterns-container', 15);
         })();
 
@@ -778,7 +789,6 @@
                 screen.classList.add('fade-out');
                 document.body.classList.add('content-active');
                 if (musicBtn) musicBtn.classList.add('visible');
-                // Al abrir, generamos las linternas fijas en toda la pantalla
                 createLanterns('lanterns-container', 18);
                 startGlitter();
                 initScrollAnimations();
