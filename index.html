@@ -30,15 +30,20 @@
         }
 
         /* ====== ANIMACIONES GENERALES ====== */
-        .anim-fade-up {
-            opacity: 0;
-            transform: translateY(35px);
-            transition: opacity 1s cubic-bezier(0.25, 1, 0.5, 1), transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+        .anim-fade-up { opacity: 0; transform: translateY(40px); transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1); }
+        .anim-fade-down { opacity: 0; transform: translateY(-40px); transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1); }
+        .anim-fade-left { opacity: 0; transform: translateX(40px); transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1); }
+        .anim-fade-right { opacity: 0; transform: translateX(-40px); transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1); }
+        .anim-zoom { opacity: 0; transform: scale(0.85); transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1); }
+        
+        .anim-fade-up.visible, .anim-fade-down.visible, .anim-fade-left.visible, .anim-fade-right.visible, .anim-zoom.visible {
+            opacity: 1; transform: translate(0) scale(1);
         }
-        .anim-fade-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+        /* Utilidad para retrasar animaciones en grupo */
+        .delay-1 { transition-delay: 0.2s; }
+        .delay-2 { transition-delay: 0.4s; }
+        .delay-3 { transition-delay: 0.6s; }
 
         /* ====== SOBRE LUMINOSO ====== */
         #envelope-screen {
@@ -131,12 +136,26 @@
             letter-spacing: 4px; color: var(--text-lilac); animation: pulse 2.5s infinite; text-transform: uppercase; width: 310px; font-weight: 700;
         }
 
-        /* ====== LINTERNAS DORADAS MÁGICAS (TEMA RAPUNZEL) ====== */
+        /* ====== MAIN ====== */
+        #main-invitation {
+            min-height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center;
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 1.5s ease-out 0.6s, transform 1.5s ease-out 0.6s;
+            overflow: hidden;
+        }
+        body.content-active #main-invitation { opacity: 1; transform: translateY(0); }
+
+        /* ====== LINTERNAS FIJAS EN TODA LA PANTALLA ====== */
+        #lanterns-container {
+            position: fixed; /* Fijo para que se vean siempre al scrollear */
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            overflow: hidden; pointer-events: none; z-index: 1;
+        }
         .floating-lantern {
             position: absolute;
             background: radial-gradient(circle at 50% 70%, #fff9d6 0%, #ffdf70 40%, #ffa000 80%, #d86c00 100%);
             border-radius: 4px 4px 2px 2px;
-            box-shadow: 0 0 15px rgba(255, 223, 112, 0.9), 0 0 30px rgba(255, 160, 0, 0.6);
+            box-shadow: 0 0 15px rgba(255, 223, 112, 0.7), 0 0 30px rgba(255, 160, 0, 0.4);
             pointer-events: none; opacity: 0;
             animation: float-lantern infinite ease-in;
             z-index: 1;
@@ -148,33 +167,34 @@
             background: #4a2c5d; opacity: 0.5;
         }
         @keyframes float-lantern {
-            0% { transform: translateY(10vh) rotate(-3deg) scale(0.8); opacity: 0; }
-            10% { opacity: 0.9; }
-            50% { transform: translateY(-40vh) rotate(3deg) scale(1.1); opacity: 0.95; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-110vh) rotate(-3deg) scale(0.9); opacity: 0; }
+            0% { transform: translateY(110vh) rotate(-3deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.6; }
+            50% { transform: translateY(40vh) rotate(3deg) scale(1.1); opacity: 0.8; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) rotate(-3deg) scale(0.9); opacity: 0; }
         }
 
-        /* ====== MAIN ====== */
-        #main-invitation {
-            min-height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center;
-            padding: 60px 20px; opacity: 0; transform: translateY(20px);
-            transition: opacity 1.5s ease-out 0.6s, transform 1.5s ease-out 0.6s;
-            overflow: hidden;
+        /* ====== SECCIONES DE COLOR (Flujo suave sin cajas) ====== */
+        .full-section {
+            width: 100%;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 5;
         }
-        body.content-active #main-invitation { opacity: 1; transform: translateY(0); }
+        /* Degradados que inician y terminan en el color de fondo para fusionarse perfectamente */
+        .bg-lilac { background: linear-gradient(to bottom, var(--bg-main) 0%, #ecd1f5 50%, var(--bg-main) 100%); }
+        .bg-pink { background: linear-gradient(to bottom, var(--bg-main) 0%, #f9dbe8 50%, var(--bg-main) 100%); }
+        .bg-gold { background: linear-gradient(to bottom, var(--bg-main) 0%, #fef1cf 50%, var(--bg-main) 100%); }
 
-        /* ====== ESTILOS ABIERTOS (SIN CAJAS) ====== */
         .seccion-abierta {
             width: 100%;
             max-width: 500px;
             text-align: center;
-            margin: 35px auto;
+            margin: 0 auto;
             position: relative;
-            z-index: 4;
-            padding: 0 15px;
         }
 
+        /* ====== ESTILOS DE ELEMENTOS ====== */
         .hero-photo-wrap {
             width: 260px; height: 350px; margin: 0 auto 35px auto;
             border-radius: 130px 130px 0 0; padding: 6px;
@@ -192,7 +212,6 @@
         .frame-sparkle:nth-child(3) { bottom:-15px;left:-15px;animation-delay:1.2s; }
         .frame-sparkle:nth-child(4) { bottom:-15px;right:-15px;animation-delay:1.8s; }
 
-        /* ====== TIPOGRAFÍA ====== */
         .section-heading {
             font-family: 'Bodoni Moda', serif; font-style: italic; font-weight: 600;
             color: var(--text-lilac); text-transform: none; line-height: 1.3;
@@ -214,7 +233,7 @@
         }
         
         .phrase { font-family:'EB Garamond','Cormorant Garamond',serif;font-style:italic;font-size:21px;color:var(--text-deep);line-height:1.7;margin-bottom:25px;padding:0 10px;font-weight:400; }
-        .family-names { font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;font-style:italic;color:var(--text-deep);line-height:1.6;margin-top:8px; }
+        .family-names { font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;font-style:italic;color:var(--text-deep);line-height:1.4;margin-top:8px; }
         .info-label { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 4px; color: var(--text-rose); text-transform: uppercase; margin-bottom: 8px; font-weight: 700; }
         .info-block { margin-bottom: 40px; position: relative; }
 
@@ -225,23 +244,20 @@
 
         /* ====== FOTOS DISTRIBUIDAS ====== */
         .scattered-photo {
-            width: 100%; border-radius: 8px; overflow: hidden; margin: 45px 0;
-            box-shadow: 0 15px 40px rgba(74, 44, 93, 0.15);
+            width: 100%; border-radius: 12px; overflow: hidden; margin: 45px 0;
+            box-shadow: 0 20px 40px rgba(74, 44, 93, 0.2);
             position: relative;
         }
         .scattered-photo img { width: 100%; display: block; }
-        /* Bordes dorados sutiles simulando marco de cuadro */
-        .scattered-photo::after {
-            content: ''; position: absolute; inset: 6px; border: 1px solid rgba(255,255,255,0.7); pointer-events: none; border-radius: 4px;
-        }
+        .scattered-photo::after { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(255,255,255,0.7); pointer-events: none; border-radius: 8px; }
 
         /* ====== COUNTDOWN ====== */
         .countdown-grid { display:flex;justify-content:center;gap:15px;margin:20px auto 10px auto;max-width:380px; }
-        .countdown-item { flex:1; display:flex; flex-direction:column; align-items:center; }
+        .countdown-item { flex:1; display:flex; flex-direction:column; align-items:center; background: transparent; }
         .countdown-number { font-family:'Cinzel',serif;font-size:32px;font-weight:600;color:var(--text-lilac);display:block; line-height: 1.2; text-shadow: 0 2px 10px rgba(150, 97, 168, 0.2);}
         .countdown-label { font-family:'Montserrat',sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:3px;color:var(--text-muted);font-weight:600; margin-top: 5px;}
 
-        /* ====== CALENDARIO RESPONSIVO SIN CAJA ====== */
+        /* ====== CALENDARIO RESPONSIVO ====== */
         .calendar-widget { margin-top:25px; width: 100%; max-width: 360px; margin-left: auto; margin-right: auto; padding: 10px;}
         .calendar-header { padding:10px 0 20px; text-align:center; color: var(--text-deep); position:relative; }
         .calendar-year { font-family:'Cinzel',serif; font-size:12px; letter-spacing:6px; text-transform:uppercase; font-weight: 700; color: var(--text-rose);}
@@ -269,7 +285,7 @@
         .btn-accion:hover { border-color: var(--text-lilac); color: var(--text-lilac); transform:translateY(-2px); box-shadow: 0 10px 20px rgba(150,97,168,0.1); }
         .btn-accion svg { width:18px; height:18px; fill:currentColor; flex-shrink:0; }
 
-        .map-wrapper { width:100%;height:220px;border-radius:12px;overflow:hidden;border:1px solid rgba(212,175,55,0.4); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(74, 44, 93, 0.1); }
+        .map-wrapper { width:100%;height:220px;border-radius:12px;overflow:hidden;border:1px solid rgba(212,175,55,0.4); margin-bottom: 20px; box-shadow: 0 15px 35px rgba(74, 44, 93, 0.15); }
 
         /* ====== MESA DE REGALOS ====== */
         .regalo-container { text-align: center; margin-top: 30px; }
@@ -287,12 +303,12 @@
         .rsvp-input-label { font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--text-lilac);text-transform:uppercase;font-weight:700;display:block;margin-bottom:10px; text-align:left;}
         .rsvp-input {
             width:100%;padding:16px 20px;font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;
-            color:var(--text-deep);background:transparent;border:1px solid rgba(212,175,55,0.6);
+            color:var(--text-deep);background:rgba(255,255,255,0.6);border:1px solid rgba(212,175,55,0.6);
             border-radius:8px;outline:none;transition:border-color 0.3s,box-shadow 0.3s;
         }
         .rsvp-input::placeholder { color: rgba(110,84,122,0.5); }
         select.rsvp-input { cursor: pointer; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23d4af37%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 20px top 50%; background-size: 12px auto; }
-        .rsvp-input:focus { border-color:var(--text-lilac);box-shadow:0 0 0 3px rgba(150,97,168,0.15); }
+        .rsvp-input:focus { border-color:var(--text-lilac);box-shadow:0 0 0 3px rgba(150,97,168,0.15); background:#fff; }
         .rsvp-input-wrap { margin-bottom:25px; text-align: left; }
         
         .btn-confirmar {
@@ -323,13 +339,14 @@
         #music-control-btn.visible { opacity:1;visibility:visible; }
         #music-control-btn svg { width:24px;height:24px; fill:var(--text-lilac); }
 
-        .invitation-footer { font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:var(--text-muted);margin-top:40px;font-weight:700;text-transform:uppercase; }
+        .invitation-footer { font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:var(--text-muted);margin-top:40px;font-weight:700;text-transform:uppercase; text-align: center; width: 100%; }
 
         @keyframes pulse { 0%,100%{opacity:0.5}50%{opacity:1} }
         @media(max-width:400px){
             .main-title{font-size:80px;}
             .phrase { font-size: 19px; }
             .section-heading { font-size: 28px; }
+            .full-section { padding: 40px 15px; }
         }
     </style>
 </head>
@@ -418,217 +435,219 @@
     </div>
 
     <main id="main-invitation">
-        <div id="lanterns-container" style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:1;"></div>
+        <!-- Linternas fijas globales -->
+        <div id="lanterns-container"></div>
 
-        <!-- SECCIONES ABIERTAS SIN CAJAS -->
-        
-        <div class="seccion-abierta">
-            <div class="frame-sparkle"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.9"/></svg></div>
-            <div class="frame-sparkle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.85"/></svg></div>
+        <!-- SECCIÓN 1: BIENVENIDA -->
+        <section class="full-section" style="padding-top: 80px;">
+            <div class="seccion-abierta">
+                <div class="frame-sparkle"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.9"/></svg></div>
+                <div class="frame-sparkle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.85"/></svg></div>
 
-            <div class="hero-photo-wrap anim-fade-up">
-                <img src="" alt="Foto Johari" class="hero-photo" style="background: rgba(150,97,168,0.1);">
+                <div class="hero-photo-wrap anim-zoom">
+                    <img src="" alt="Foto Johari" class="hero-photo" style="background: rgba(150,97,168,0.1);">
+                </div>
+
+                <div class="section-tag anim-fade-up">Mis XV Años</div>
+                <h1 class="main-title anim-zoom delay-1">Johari</h1>
+                
+                <p class="phrase anim-fade-up delay-2" style="margin-top: 15px;">"Con la bendición de Dios y el amor que mi familia me ha dado, me siento feliz de llegar a este momento de mi vida, el momento que dejará atrás mi infancia y comenzaré una nueva etapa; es mi deseo que compartan conmigo la alegría de mis XV años."</p>
+                
+                <div class="divider-ornate anim-fade-left"><div class="divider-ornate-diamond"></div></div>
             </div>
+        </section>
 
-            <div class="section-tag anim-fade-up">Mis XV Años</div>
-            <h1 class="main-title anim-fade-up">Johari</h1>
-            
-            <p class="phrase anim-fade-up" style="margin-top: 15px;">"Con la bendición de Dios y el amor que mi familia me ha dado, me siento feliz de llegar a este momento de mi vida, el momento que dejará atrás mi infancia y comenzaré una nueva etapa; es mi deseo que compartan conmigo la alegría de mis XV años."</p>
-        </div>
+        <!-- SECCIÓN 2: FAMILIA (FONDO LILA DIFUMINADO) -->
+        <section class="full-section bg-lilac">
+            <div class="seccion-abierta">
+                <div class="info-block anim-fade-right">
+                    <div class="info-label">Con la bendición de mi madre</div>
+                    <div class="family-names">Stefani Chantal Aranda Mora</div>
+                </div>
+                <div class="info-block anim-fade-left delay-1">
+                    <div class="info-label">Mis abuelos</div>
+                    <div class="family-names">Pedro Aranda Camacho<br>Columba Mora Carrillo</div>
+                </div>
+                <div class="info-block anim-fade-right delay-2">
+                    <div class="info-label">Y mis padrinos</div>
+                    <div class="family-names">Jorge Leonardo Aranda Mora<br>Carmina Díaz Bravo</div>
+                </div>
 
-        <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
-
-        <div class="seccion-abierta">
-            <div class="info-block anim-fade-up">
-                <div class="info-label">Con la bendición de mi madre</div>
-                <div class="family-names">Stefani Chantal Aranda Mora</div>
+                <div class="scattered-photo anim-zoom delay-3" style="margin-top: 50px;">
+                    <img src="" alt="Sesión Johari" style="min-height: 250px; background: rgba(150,97,168,0.1);">
+                </div>
             </div>
-            <div class="info-block anim-fade-up">
-                <div class="info-label">Mis abuelos</div>
-                <div class="family-names">Pedro Aranda Camacho<br>Columba Mora Carrillo</div>
-            </div>
-            <div class="info-block anim-fade-up">
-                <div class="info-label">Y mis padrinos</div>
-                <div class="family-names">Jorge Leonardo Aranda Mora<br>Carmina Díaz Bravo</div>
-            </div>
-        </div>
+        </section>
 
-        <div class="seccion-abierta" style="margin: 20px auto;">
-            <div class="scattered-photo anim-fade-up">
-                <img src="" alt="Sesión Johari" style="min-height: 250px; background: rgba(150,97,168,0.1);">
-            </div>
-        </div>
-
-        <div class="seccion-abierta">
-            <div class="section-heading-sm anim-fade-up">Cuenta Regresiva</div>
-            <div class="countdown-grid anim-fade-up" id="countdown-timer">
-                <div class="countdown-item"><span class="countdown-number" id="days">00</span><span class="countdown-label">Días</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="hours">00</span><span class="countdown-label">Hrs</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="minutes">00</span><span class="countdown-label">Min</span></div>
-                <div class="countdown-item"><span class="countdown-number" id="seconds">00</span><span class="countdown-label">Seg</span></div>
-            </div>
-        </div>
-
-        <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
-
-        <div class="seccion-abierta">
-            <div class="section-heading anim-fade-up">Fecha</div>
-            <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:32px;font-weight:700;color:var(--text-deep);letter-spacing:4px; text-shadow: 0 2px 5px rgba(212,175,55,0.2);">17 · OCT · 2026</div>
-            <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:var(--text-muted);margin-top:5px;font-weight:600;">Sábado</div>
-            
-            <div class="calendar-widget anim-fade-up">
-                <div class="calendar-header"><div class="calendar-month">Octubre</div><div class="calendar-year">2026</div></div>
-                <div class="calendar-body">
-                    <div class="calendar-days-header">
-                        <span class="calendar-day-name">Dom</span><span class="calendar-day-name">Lun</span><span class="calendar-day-name">Mar</span><span class="calendar-day-name">Mié</span><span class="calendar-day-name">Jue</span><span class="calendar-day-name">Vie</span><span class="calendar-day-name">Sáb</span>
-                    </div>
-                    <div class="calendar-grid">
-                        <span class="cal-day empty"></span><span class="cal-day empty"></span><span class="cal-day empty"></span><span class="cal-day empty"></span>
-                        <span class="cal-day">1</span><span class="cal-day">2</span><span class="cal-day">3</span>
-                        <span class="cal-day">4</span><span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span><span class="cal-day">8</span><span class="cal-day">9</span><span class="cal-day">10</span>
-                        <span class="cal-day">11</span><span class="cal-day">12</span><span class="cal-day">13</span><span class="cal-day">14</span><span class="cal-day">15</span><span class="cal-day">16</span><span class="cal-day highlight">17</span>
-                        <span class="cal-day">18</span><span class="cal-day">19</span><span class="cal-day">20</span><span class="cal-day">21</span><span class="cal-day">22</span><span class="cal-day">23</span><span class="cal-day">24</span>
-                        <span class="cal-day">25</span><span class="cal-day">26</span><span class="cal-day">27</span><span class="cal-day">28</span><span class="cal-day">29</span><span class="cal-day">30</span><span class="cal-day">31</span>
+        <!-- SECCIÓN 3: FECHA Y CUENTA REGRESIVA (FONDO ROSA DIFUMINADO) -->
+        <section class="full-section bg-pink">
+            <div class="seccion-abierta">
+                <div class="section-heading anim-fade-up">La Gran Fecha</div>
+                <div class="anim-zoom delay-1" style="font-family:'Cinzel',serif;font-size:34px;font-weight:700;color:var(--text-deep);letter-spacing:4px; text-shadow: 0 2px 5px rgba(212,175,55,0.2);">17 · OCT · 2026</div>
+                <div class="anim-fade-up delay-2" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:24px;color:var(--text-muted);margin-top:5px;font-weight:600;">Sábado</div>
+                
+                <div class="calendar-widget anim-zoom delay-3">
+                    <div class="calendar-header"><div class="calendar-month">Octubre</div><div class="calendar-year">2026</div></div>
+                    <div class="calendar-body">
+                        <div class="calendar-days-header">
+                            <span class="calendar-day-name">Dom</span><span class="calendar-day-name">Lun</span><span class="calendar-day-name">Mar</span><span class="calendar-day-name">Mié</span><span class="calendar-day-name">Jue</span><span class="calendar-day-name">Vie</span><span class="calendar-day-name">Sáb</span>
+                        </div>
+                        <div class="calendar-grid">
+                            <span class="cal-day empty"></span><span class="cal-day empty"></span><span class="cal-day empty"></span><span class="cal-day empty"></span>
+                            <span class="cal-day">1</span><span class="cal-day">2</span><span class="cal-day">3</span>
+                            <span class="cal-day">4</span><span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span><span class="cal-day">8</span><span class="cal-day">9</span><span class="cal-day">10</span>
+                            <span class="cal-day">11</span><span class="cal-day">12</span><span class="cal-day">13</span><span class="cal-day">14</span><span class="cal-day">15</span><span class="cal-day">16</span><span class="cal-day highlight">17</span>
+                            <span class="cal-day">18</span><span class="cal-day">19</span><span class="cal-day">20</span><span class="cal-day">21</span><span class="cal-day">22</span><span class="cal-day">23</span><span class="cal-day">24</span>
+                            <span class="cal-day">25</span><span class="cal-day">26</span><span class="cal-day">27</span><span class="cal-day">28</span><span class="cal-day">29</span><span class="cal-day">30</span><span class="cal-day">31</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <button class="btn-accion anim-fade-up" onclick="addToCalendar()">
-                <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5C3.89 3 3 3.9 3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H5V9h14v10zm0-12H5V5h14v2zM7 11h5v5H7z"/></svg>
-                Agregar a mi Calendario
-            </button>
-        </div>
-
-        <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
-
-        <div class="seccion-abierta">
-            <div class="section-heading anim-fade-up" style="margin-bottom: 25px;">Ubicaciones</div>
-            
-            <div style="margin-bottom: 45px;">
-                <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:16px;color:var(--text-lilac);margin-bottom:5px;letter-spacing:3px;font-weight:700;text-transform:uppercase;">Ceremonia Religiosa</div>
-                <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--text-muted);margin-bottom:5px;font-weight:600;">Parroquia San José Obrero</div>
-                <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:12px;color:var(--text-rose);margin-bottom:15px;letter-spacing:2px;font-weight:700;">7:00 P.M.</div>
                 
-                <div class="map-wrapper anim-fade-up">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.0118515452355!2d-96.12979671737408!3d19.15095850340015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c341114e4e7ba3%3A0x10161254ba3a310b!2sParroquia%20San%20Jose%20Obrero!5e0!3m2!1ses-419!2smx!4v1784571972834!5m2!1ses-419!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                </div>
-                <a href="https://maps.app.goo.gl/t7dBdqGuHqMzqwVY9" target="_blank" style="text-decoration:none;" class="anim-fade-up">
-                    <button class="btn-accion">Ver en Google Maps</button>
-                </a>
-            </div>
-
-            <div>
-                <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:16px;color:var(--text-lilac);margin-bottom:5px;letter-spacing:3px;font-weight:700;text-transform:uppercase;">Recepción</div>
-                <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--text-muted);margin-bottom:5px;font-weight:600;">Calle 18 #16 Col Manuel Nieto</div>
-                <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:12px;color:var(--text-rose);margin-bottom:15px;letter-spacing:2px;font-weight:700;">8:30 P.M.</div>
-                
-                <div class="map-wrapper anim-fade-up">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1884.5386204369086!2d-96.1221266613321!3d19.148095929332676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c3411a829266f3%3A0xf94afa39901f0d88!2sC.%2018%2016%2C%20Manuel%20Nieto%2C%2094296%20Boca%20del%20R%C3%ADo%2C%20Ver.!5e0!3m2!1ses-419!2smx!4v1784572049123!5m2!1ses-419!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
-                </div>
-                <a href="https://maps.app.goo.gl/FjeLcnU5cjc3zaeF7" target="_blank" style="text-decoration:none;" class="anim-fade-up">
-                    <button class="btn-accion">Ver en Google Maps</button>
-                </a>
-            </div>
-        </div>
-
-        <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
-
-        <div class="seccion-abierta">
-            <div class="section-heading anim-fade-up">Código de Vestimenta</div>
-            <div class="anim-fade-up" style="font-family:'Cinzel',serif;font-size:28px;font-weight:700;letter-spacing:6px;color:var(--text-deep);margin-top:5px;">Formal</div>
-            <div class="anim-fade-up" style="font-family:'Cormorant Garamond',serif;font-size:21px;font-style:italic;color:var(--text-lilac);font-weight:600;margin-top:12px; padding: 0 15px;">Se reserva el color Lila y Morado para la festejada.</div>
-        </div>
-
-        <div class="seccion-abierta" style="margin: 20px auto;">
-            <div class="scattered-photo anim-fade-up">
-                <img src="" alt="Sesión Johari" style="min-height: 250px; background: rgba(150,97,168,0.1);">
-            </div>
-        </div>
-
-        <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
-
-        <div class="seccion-abierta">
-            <div class="section-heading anim-fade-up">Mesa de Regalos</div>
-            <p class="anim-fade-up" style="font-family: 'Cormorant Garamond', serif; font-size: 21px; color: var(--text-deep); line-height: 1.6; margin-bottom: 35px;">
-                El mejor regalo que puedo recibir es contar con tu presencia en este día tan mágico. Pero si deseas tener un detalle hermoso conmigo, puedes hacerlo de las siguientes maneras:
-            </p>
-            
-            <div class="regalo-container anim-fade-up">
-                <svg class="regalo-icon" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="8" width="18" height="4" rx="1" ry="1"></rect>
-                    <path d="M12 8v13"></path>
-                    <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
-                    <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
-                </svg>
-                <div class="regalo-pill">Obsequio de tu Preferencia</div>
-                <p class="regalo-subtext">Podrás dejar tu obsequio en un área especial el día de la recepción.</p>
-            </div>
-
-            <div class="regalo-stars anim-fade-up">✦ ✦ ✦</div>
-
-            <div class="regalo-container anim-fade-up">
-                <svg class="regalo-icon" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="6" width="18" height="12" rx="2"></rect>
-                    <path d="M3 6l9 6 9-6"></path>
-                </svg>
-                <div class="regalo-pill">Lluvia de Sobres</div>
-                <p class="regalo-subtext">La tradición de entregar tu regalo en un sobre cerrado durante la fiesta.</p>
-            </div>
-        </div>
-
-        <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
-
-        <div class="seccion-abierta">
-            <div class="section-heading anim-fade-up">Confirmación</div>
-            <p class="rsvp-intro anim-fade-up">Por favor confírmame tu asistencia, será un honor contar con tu presencia.</p>
-            
-            <div class="rsvp-input-wrap anim-fade-up">
-                <label class="rsvp-input-label" for="guest-name">Nombre Completo</label>
-                <input type="text" id="guest-name" class="rsvp-input" placeholder="Escribe tu nombre aquí…">
-            </div>
-            
-            <div class="rsvp-input-wrap anim-fade-up">
-                <label class="rsvp-input-label" for="guest-attendance">¿Podrás acompañarme?</label>
-                <select id="guest-attendance" class="rsvp-input">
-                    <option value="Sí asistiré">Sí asistiré</option>
-                    <option value="No podré asistir">No podré asistir</option>
-                </select>
-            </div>
-            
-            <button onclick="sendConfirmationViaWhatsApp()" class="btn-confirmar anim-fade-up">
-                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                Confirmar por WhatsApp
-            </button>
-        </div>
-
-        <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
-
-        <div class="seccion-abierta">
-            <div class="section-heading anim-fade-up">Buenos Deseos</div>
-            <p class="rsvp-intro anim-fade-up">Deja un mensaje para Johari. Tu mensaje se guardará con cariño en esta nueva etapa.</p>
-            <form id="wish-form" style="text-align: left;" class="anim-fade-up">
-                <div class="rsvp-input-wrap">
-                    <label class="rsvp-input-label" for="wish-nombre">Tu nombre</label>
-                    <input type="text" id="wish-nombre" class="rsvp-input" placeholder="Ej. Mariana" required>
-                </div>
-                <div class="rsvp-input-wrap">
-                    <label class="rsvp-input-label" for="wish-mensaje">Mensaje</label>
-                    <textarea id="wish-mensaje" class="rsvp-input" placeholder="Escribe aquí tus buenos deseos..." required style="min-height: 120px; resize: vertical; padding-top: 15px;"></textarea>
-                </div>
-                <button type="submit" id="btn-wish" class="btn-confirmar" style="margin-top: 10px;">
-                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                    Enviar Mensaje por WhatsApp
+                <button class="btn-accion anim-fade-up delay-3" onclick="addToCalendar()">
+                    <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5C3.89 3 3 3.9 3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm0 16H5V9h14v10zm0-12H5V5h14v2zM7 11h5v5H7z"/></svg>
+                    Agregar a mi Calendario
                 </button>
-            </form>
-        </div>
 
-        <div class="divider-ornate anim-fade-up" style="margin-top:50px;"><div class="divider-ornate-diamond"></div></div>
-        <div class="invitation-footer anim-fade-up">Invytia Premium</div>
+                <div class="section-heading-sm anim-fade-up" style="margin-top: 50px;">Faltan solo...</div>
+                <div class="countdown-grid anim-zoom" id="countdown-timer">
+                    <div class="countdown-item"><span class="countdown-number" id="days">00</span><span class="countdown-label">Días</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="hours">00</span><span class="countdown-label">Hrs</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="minutes">00</span><span class="countdown-label">Min</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="seconds">00</span><span class="countdown-label">Seg</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: UBICACIONES (FONDO LILA DE NUEVO) -->
+        <section class="full-section bg-lilac">
+            <div class="seccion-abierta">
+                <div class="section-heading anim-fade-down">Ubicaciones</div>
+                
+                <div style="margin-bottom: 50px;">
+                    <div class="anim-fade-right delay-1" style="font-family:'Cinzel',serif;font-size:16px;color:var(--text-lilac);margin-bottom:5px;letter-spacing:3px;font-weight:700;text-transform:uppercase;">Ceremonia Religiosa</div>
+                    <div class="anim-fade-left delay-2" style="font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;color:var(--text-deep);margin-bottom:5px;font-weight:600;">Parroquia San José Obrero</div>
+                    <div class="anim-zoom delay-3" style="font-family:'Cinzel',serif;font-size:13px;color:var(--text-rose);margin-bottom:15px;letter-spacing:3px;font-weight:700;">7:00 P.M.</div>
+                    
+                    <div class="map-wrapper anim-zoom delay-3">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.0118515452355!2d-96.12979671737408!3d19.15095850340015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c341114e4e7ba3%3A0x10161254ba3a310b!2sParroquia%20San%20Jose%20Obrero!5e0!3m2!1ses-419!2smx!4v1784571972834!5m2!1ses-419!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    </div>
+                    <a href="https://maps.app.goo.gl/t7dBdqGuHqMzqwVY9" target="_blank" style="text-decoration:none;" class="anim-fade-up">
+                        <button class="btn-accion">Ver en Google Maps</button>
+                    </a>
+                </div>
+
+                <div class="divider-ornate anim-fade-right"><div class="divider-ornate-diamond"></div></div>
+
+                <div style="margin-top: 30px;">
+                    <div class="anim-fade-left delay-1" style="font-family:'Cinzel',serif;font-size:16px;color:var(--text-lilac);margin-bottom:5px;letter-spacing:3px;font-weight:700;text-transform:uppercase;">Recepción</div>
+                    <div class="anim-fade-right delay-2" style="font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;color:var(--text-deep);margin-bottom:5px;font-weight:600;">Calle 18 #16 Col Manuel Nieto</div>
+                    <div class="anim-zoom delay-3" style="font-family:'Cinzel',serif;font-size:13px;color:var(--text-rose);margin-bottom:15px;letter-spacing:3px;font-weight:700;">8:30 P.M.</div>
+                    
+                    <div class="map-wrapper anim-zoom delay-3">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1884.5386204369086!2d-96.1221266613321!3d19.148095929332676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c3411a829266f3%3A0xf94afa39901f0d88!2sC.%2018%2016%2C%20Manuel%20Nieto%2C%2094296%20Boca%20del%20R%C3%ADo%2C%20Ver.!5e0!3m2!1ses-419!2smx!4v1784572049123!5m2!1ses-419!2smx" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                    </div>
+                    <a href="https://maps.app.goo.gl/FjeLcnU5cjc3zaeF7" target="_blank" style="text-decoration:none;" class="anim-fade-up">
+                        <button class="btn-accion">Ver en Google Maps</button>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: VESTIMENTA Y REGALOS (FONDO DORADO/AMARILLO PASTEL) -->
+        <section class="full-section bg-gold">
+            <div class="seccion-abierta">
+                <div class="section-heading anim-fade-down">Código de Vestimenta</div>
+                <div class="anim-zoom delay-1" style="font-family:'Cinzel',serif;font-size:30px;font-weight:700;letter-spacing:8px;color:var(--text-deep);margin-top:5px;">Formal</div>
+                <div class="anim-fade-up delay-2" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--text-lilac);font-weight:600;margin-top:12px; padding: 0 15px;">Se reserva el color Lila y Morado para la festejada.</div>
+
+                <div class="scattered-photo anim-zoom delay-3" style="margin: 50px 0;">
+                    <img src="" alt="Sesión Johari" style="min-height: 250px; background: rgba(212,175,55,0.1);">
+                </div>
+
+                <div class="divider-ornate anim-fade-left"><div class="divider-ornate-diamond"></div></div>
+
+                <div class="section-heading anim-fade-right" style="margin-top: 30px;">Mesa de Regalos</div>
+                <p class="anim-fade-left delay-1" style="font-family: 'Cormorant Garamond', serif; font-size: 21px; color: var(--text-deep); line-height: 1.6; margin-bottom: 35px;">
+                    El mejor regalo que puedo recibir es contar con tu presencia en este día tan mágico. Pero si deseas tener un detalle hermoso conmigo, puedes hacerlo de las siguientes maneras:
+                </p>
+                
+                <div class="regalo-container anim-fade-up delay-2">
+                    <svg class="regalo-icon" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="8" width="18" height="4" rx="1" ry="1"></rect>
+                        <path d="M12 8v13"></path>
+                        <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
+                        <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
+                    </svg>
+                    <div class="regalo-pill">Obsequio de tu Preferencia</div>
+                    <p class="regalo-subtext">Podrás dejar tu obsequio en un área especial el día de la recepción.</p>
+                </div>
+
+                <div class="regalo-stars anim-zoom delay-3">✦ ✦ ✦</div>
+
+                <div class="regalo-container anim-fade-up delay-3">
+                    <svg class="regalo-icon" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="6" width="18" height="12" rx="2"></rect>
+                        <path d="M3 6l9 6 9-6"></path>
+                    </svg>
+                    <div class="regalo-pill">Lluvia de Sobres</div>
+                    <p class="regalo-subtext">La tradición de entregar tu regalo en un sobre cerrado durante la fiesta.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: CONFIRMACIÓN Y DESEOS (FONDO LILA DE NUEVO) -->
+        <section class="full-section bg-lilac">
+            <div class="seccion-abierta">
+                <div class="section-heading anim-fade-down">Confirmación</div>
+                <p class="rsvp-intro anim-fade-up delay-1">Por favor confírmame tu asistencia, será un honor contar con tu presencia.</p>
+                
+                <div class="rsvp-input-wrap anim-fade-right delay-2">
+                    <label class="rsvp-input-label" for="guest-name">Nombre Completo</label>
+                    <input type="text" id="guest-name" class="rsvp-input" placeholder="Escribe tu nombre aquí…">
+                </div>
+                
+                <div class="rsvp-input-wrap anim-fade-left delay-3">
+                    <label class="rsvp-input-label" for="guest-attendance">¿Podrás acompañarme?</label>
+                    <select id="guest-attendance" class="rsvp-input">
+                        <option value="Sí asistiré">Sí asistiré</option>
+                        <option value="No podré asistir">No podré asistir</option>
+                    </select>
+                </div>
+                
+                <button onclick="sendConfirmationViaWhatsApp()" class="btn-confirmar anim-zoom delay-3">
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    Confirmar por WhatsApp
+                </button>
+
+                <div class="divider-ornate anim-fade-up"><div class="divider-ornate-diamond"></div></div>
+
+                <div class="section-heading anim-fade-down">Buenos Deseos</div>
+                <p class="rsvp-intro anim-fade-up delay-1">Deja un mensaje para Johari. Tu mensaje se guardará con cariño en esta nueva etapa.</p>
+                <form id="wish-form" style="text-align: left;" class="anim-fade-up delay-2">
+                    <div class="rsvp-input-wrap">
+                        <label class="rsvp-input-label" for="wish-nombre">Tu nombre</label>
+                        <input type="text" id="wish-nombre" class="rsvp-input" placeholder="Ej. Mariana" required>
+                    </div>
+                    <div class="rsvp-input-wrap">
+                        <label class="rsvp-input-label" for="wish-mensaje">Mensaje</label>
+                        <textarea id="wish-mensaje" class="rsvp-input" placeholder="Escribe aquí tus buenos deseos..." required style="min-height: 120px; resize: vertical; padding-top: 15px;"></textarea>
+                    </div>
+                    <button type="submit" id="btn-wish" class="btn-confirmar anim-zoom">
+                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                        Enviar Mensaje por WhatsApp
+                    </button>
+                </form>
+
+                <div class="divider-ornate anim-zoom" style="margin-top:60px;"><div class="divider-ornate-diamond"></div></div>
+                <div class="invitation-footer anim-fade-up">Invytia Premium</div>
+            </div>
+        </section>
     </main>
 
     <script>
         let isPlaying = false;
         let pasesAsignados = 0; 
-        const NUMERO_WHATSAPP = "522294084815"; // Número actualizado
+        const NUMERO_WHATSAPP = "522294084815"; // Número actualizado para Johari
 
         /* ===== GLITTER MAGICO ===== */
         const canvas = document.getElementById('glitter-canvas');
@@ -686,9 +705,9 @@
         function startGlitter(){canvas.classList.add('visible');drawGlitter();setInterval(spawnAmbient,350);}
         document.addEventListener('click',e=>{if(document.body.classList.contains('content-active'))createGlitterBurst(e.clientX,e.clientY);});
 
-        /* ===== SCROLL OBSERVER ===== */
+        /* ===== SCROLL OBSERVER (NUEVAS ANIMACIONES) ===== */
         function initScrollAnimations(){
-            const elements = document.querySelectorAll('.anim-fade-up');
+            const elements = document.querySelectorAll('.anim-fade-up, .anim-fade-down, .anim-fade-left, .anim-fade-right, .anim-zoom');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if(entry.isIntersecting){
@@ -700,7 +719,7 @@
             elements.forEach(el => observer.observe(el));
         }
 
-        /* ===== LINTERNAS DORADAS MÁGICAS ===== */
+        /* ===== LINTERNAS DORADAS MÁGICAS ====== */
         function createLanterns(containerId, count){
             const c=document.getElementById(containerId);
             if(!c) return;
@@ -725,6 +744,7 @@
                     c.appendChild(s);
                 }
             }
+            // Linternas de la portada inicial
             createLanterns('env-lanterns-container', 15);
         })();
 
@@ -758,7 +778,8 @@
                 screen.classList.add('fade-out');
                 document.body.classList.add('content-active');
                 if (musicBtn) musicBtn.classList.add('visible');
-                createLanterns('lanterns-container', 22);
+                // Al abrir, generamos las linternas fijas en toda la pantalla
+                createLanterns('lanterns-container', 18);
                 startGlitter();
                 initScrollAnimations();
             }, 1400);
