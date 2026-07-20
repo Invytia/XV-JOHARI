@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis XV Años - Johari</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,600;1,400;1,600&family=Cinzel:wght@300;400;600;700&family=Pinyon+Script&family=Montserrat:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #5c326e;
+            --light-lilac: #d9c4e5;
+            --pastel-pink: #f4dce4;
+            --gold-accent: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.6);
+            --text-deep: #3c1e48;
+            --text-muted: #6e507b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body, html {
+            width: 100%; height: 100%;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background-color: #2b1b3d; /* Fondo oscuro inicial para el sobre */
+            color: var(--text-deep);
+            overflow-x: hidden;
+        }
+
+        /* Fondo general de la invitación con degradado pastel/lila */
+        #main-invitation::before {
+            content: '';
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(180deg, #ebdcf0 0%, #f7e6ef 50%, #d8c3e4 100%);
+            z-index: -2;
+        }
+
+        /* ====== ANIMACIONES DE ENTRADA (SCROLL) ====== */
+        .anim-section {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .anim-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ====== SOBRE REDISEÑADO (RAPUNZEL) ====== */
+        #envelope-screen {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #422659 0%, #1f112e 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000;
+            transition: opacity 1.2s ease-in-out, visibility 1.2s;
+            overflow: hidden;
+        }
+        #envelope-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+
+        .envelope-wrapper { position: relative; cursor: pointer; z-index: 10; display: flex; flex-direction: column; align-items: center; width: 310px; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .envelope-wrapper:hover { transform: translateY(-6px) scale(1.02); }
+        .envelope-body { position: relative; width: 310px; height: 210px; margin: 0 auto; }
+        .env-svg-main { width: 310px; height: 210px; filter: drop-shadow(0 20px 50px rgba(0,0,0,0.6)) drop-shadow(0 6px 15px var(--gold-glow)); transition: filter 0.4s ease; }
+        .envelope-wrapper:hover .env-svg-main { filter: drop-shadow(0 28px 60px rgba(0,0,0,0.7)) drop-shadow(0 8px 22px rgba(212,175,55,0.4)); }
+
+        .env-name-label { position: absolute; top: 78px; left: 0; right: 0; text-align: center; font-family: 'Pinyon Script', cursive; font-size: 42px; color: #fff9e6; text-shadow: 0 0 20px var(--gold-glow), 0 2px 8px rgba(0,0,0,0.5); pointer-events: none; z-index: 15; }
+        .env-date-label { position: absolute; top: 125px; left: 0; right: 0; text-align: center; font-family: 'Cinzel', serif; font-size: 8px; letter-spacing: 4px; color: var(--gold-accent); pointer-events: none; z-index: 15; text-transform: uppercase; }
+
+        .env-flap-group { transform-origin: 155px 0px; transform-box: fill-box; transition: transform 0.7s cubic-bezier(0.4,0,0.2,1) 0.1s; }
+        .envelope-wrapper.open .env-flap-group { transform: rotateX(-176deg); }
+
+        .letter-peek { position: absolute; left: 50%; transform: translateX(-50%); width: 270px; background: linear-gradient(180deg, #fff9f0 0%, #fef5e7 100%); border-radius: 3px; border: 1px solid rgba(212,175,55,0.3); z-index: 5; overflow: hidden; top: 20px; height: 0; opacity: 0; transition: height 0.6s cubic-bezier(0.22,1,0.36,1) 0.7s, opacity 0.4s ease 0.7s, top 0.6s cubic-bezier(0.22,1,0.36,1) 0.7s; display: flex; align-items: flex-start; justify-content: center; padding-top: 12px; box-shadow: 0 -8px 30px rgba(0,0,0,0.3); }
+        .envelope-wrapper.open .letter-peek { height: 80px; opacity: 1; top: -40px; }
+        .letter-peek-inner { text-align: center; opacity: 0; transition: opacity 0.4s ease 1.1s; }
+        .envelope-wrapper.open .letter-peek-inner { opacity: 1; }
+        .letter-peek-name { font-family: 'Pinyon Script', cursive; font-size: 28px; color: var(--primary-purple); line-height: 1; }
+        .letter-peek-date { font-family: 'Cinzel', serif; font-size: 7.5px; letter-spacing: 3px; color: #b08d42; margin-top: 2px; text-transform: uppercase; }
+
+        .wax-seal { position: absolute; top: 143px; left: 50%; transform: translateX(-50%); width: 62px; height: 62px; z-index: 20; transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s, opacity 0.4s ease 0.15s; }
+        .envelope-wrapper.open .wax-seal { transform: translateX(-50%) scale(0) rotate(45deg); opacity: 0; }
+        .hint-text { margin-top: 30px; text-align: center; font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 4px; color: var(--gold-accent); animation: pulse 2.5s infinite; text-transform: uppercase; width: 310px; }
+
+        /* ====== MAIN ====== */
+        #main-invitation {
+            min-height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center; padding: 60px 20px; 
+            opacity: 0; transform: translateY(20px); transition: opacity 1.5s ease-out 0.6s, transform 1.5s ease-out 0.6s;
+        }
+        body.content-active #main-invitation { opacity: 1; transform: translateY(0); }
+
+        .invitation-frame {
+            max-width: 500px; width: 100%; text-align: center; position: relative; overflow: visible; z-index: 2;
+        }
+
+        /* ====== TIPOGRAFÍA Y ESTRUCTURA LIMPIA ====== */
+        .section-heading { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 28px; font-weight: 500; letter-spacing: 1px; color: var(--primary-purple); margin-bottom: 16px; line-height: 1.3; }
+        .section-heading-sm { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 22px; font-weight: 500; letter-spacing: 1px; color: var(--primary-purple); margin-bottom: 12px; }
+        .section-tag { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 16px; letter-spacing: 2px; color: var(--primary-purple); margin-bottom: 10px; font-weight: 500; }
+        .main-title { font-family: 'Pinyon Script', cursive; font-size: 96px; color: var(--primary-purple); margin-bottom: 10px; text-shadow: 0 1px 4px rgba(255,255,255,0.8); line-height: 1; }
+        .phrase { font-family: 'EB Garamond', 'Cormorant Garamond', serif; font-style: italic; font-size: 19px; color: var(--text-deep); line-height: 1.7; margin-bottom: 25px; padding: 0 15px; font-weight: 400; text-align: center; }
+        
+        .info-label { font-family: 'Bodoni Moda', serif; font-style: italic; font-size: 13px; letter-spacing: 3px; color: var(--gold-accent); text-transform: uppercase; margin-bottom: 8px; font-weight: 600; }
+        .family-names { font-family: 'Cormorant Garamond', serif; font-size: 21px; font-weight: 400; font-style: italic; color: var(--text-deep); line-height: 1.6; margin-top: 6px; margin-bottom: 25px;}
+
+        /* ====== DIVIDER ORNATE (LINTERNA) ====== */
+        .divider-ornate { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 40px auto; width: 80%; }
+        .divider-ornate::before, .divider-ornate::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-accent)); }
+        .divider-ornate::after { background: linear-gradient(to left, transparent, var(--gold-accent)); }
+        .divider-ornate svg { width: 20px; height: 20px; fill: var(--gold-accent); flex-shrink: 0; filter: drop-shadow(0 0 5px var(--gold-glow)); }
+
+        /* ====== COUNTDOWN ====== */
+        .countdown-grid { display: flex; justify-content: center; gap: 15px; margin: 20px auto; max-width: 380px; width: 100%; }
+        .countdown-item { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .countdown-number { font-family: 'Cinzel', serif; font-size: 32px; font-weight: 400; color: var(--primary-purple); text-shadow: 0 2px 10px rgba(212,175,55,0.3); }
+        .countdown-label { font-family: 'Montserrat', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); font-weight: 500; margin-top: 4px; }
+
+        /* ====== CALENDARIO RESPONSIVO ====== */
+        .calendar-widget { margin-top: 25px; width: 100%; max-width: 320px; text-align: center; padding: 15px 0; }
+        .calendar-header { padding-bottom: 15px; border-bottom: 1px solid rgba(212,175,55,0.3); margin-bottom: 15px; }
+        .calendar-year { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 5px; text-transform: uppercase; color: var(--text-muted); }
+        .calendar-month { margin-top: 5px; font-family: 'Pinyon Script', cursive; font-size: 42px; color: var(--primary-purple); line-height: 1; }
+        .calendar-days-header { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 12px; }
+        .calendar-day-name { font-family: 'Montserrat', sans-serif; font-size: 9px; letter-spacing: 1px; color: var(--gold-accent); text-transform: uppercase; font-weight: 600; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text-deep); border-radius: 50%; }
+        .cal-day.empty { opacity: 0; }
+        .cal-day.highlight { background-color: var(--primary-purple); color: white; font-weight: 600; box-shadow: 0 0 15px var(--gold-glow); transform: scale(1.1); }
+
+        /* ====== MAP CARDS ====== */
+        .map-card { margin-top: 25px; width: 100%; text-align: left; background: rgba(255,255,255,0.4); border-radius: 12px; overflow: hidden; border: 1px solid rgba(212,175,55,0.2); box-shadow: 0 10px 30px rgba(92,50,110,0.08); }
+        .map-card-header { padding: 15px; text-align: center; }
+        .map-card-tipo { display: block; font-family: 'Cinzel', serif; font-size: 9px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--gold-accent); margin-bottom: 5px; }
+        .map-card-nombre { display: block; font-family: 'Cormorant Garamond', serif; font-size: 22px; font-style: italic; font-weight: 600; color: var(--primary-purple); }
+        .map-card-body { padding: 0 15px 20px; text-align: center; }
+        .map-card-direccion { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 400; color: var(--text-deep); line-height: 1.6; margin-bottom: 12px; }
+        .map-wrapper { width: 100%; height: 200px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(212,175,55,0.3); }
+        .map-wrapper iframe { width: 100%; height: 100%; border: none; }
+
+        /* ====== ITINERARIO ====== */
+        .itinerario-timeline { margin-top: 30px; position: relative; padding: 0; width: 100%; }
+        .itinerario-timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, transparent, var(--gold-accent) 15%, var(--gold-accent) 85%, transparent); transform: translateX(-50%); }
+        .itin-row { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 25px; }
+        .itin-hora { width: calc(50% - 25px); text-align: right; padding-right: 15px; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; color: var(--gold-accent); flex-shrink: 0; }
+        .itin-node { width: 20px; height: 20px; background: var(--primary-purple); border: 2px solid var(--gold-accent); border-radius: 50%; flex-shrink: 0; position: relative; z-index: 2; box-shadow: 0 0 10px var(--gold-glow); }
+        .itin-evento { width: calc(50% - 25px); padding-left: 15px; flex-shrink: 0; text-align: left; }
+        .itin-evento-nombre { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 22px; font-weight: 500; color: var(--primary-purple); }
+
+        /* ====== BOTONES Y FORMULARIOS ====== */
+        .rsvp-input-wrap { width: 100%; margin-bottom: 15px; text-align: left; }
+        .rsvp-input-label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; color: var(--text-deep); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 8px; }
+        .rsvp-input { width: 100%; padding: 14px 18px; font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--text-deep); background: rgba(255,255,255,0.6); border: 1px solid rgba(212,175,55,0.4); border-radius: 8px; outline: none; transition: all 0.3s; }
+        .rsvp-input:focus { border-color: var(--primary-purple); background: rgba(255,255,255,0.9); box-shadow: 0 0 10px rgba(92,50,110,0.1); }
+        .rsvp-input::placeholder { color: rgba(110,80,123,0.5); }
+        
+        .btn-confirmar {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; max-width: 320px;
+            padding: 16px 20px; background: linear-gradient(135deg, var(--primary-purple), #7e4b96);
+            color: #fff; border: 1px solid rgba(212,175,55,0.3); font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 3px;
+            text-transform: uppercase; cursor: pointer; font-weight: 600; border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(92,50,110,0.3); transition: all 0.4s ease; text-decoration: none; margin-top: 10px;
+        }
+        .btn-confirmar:hover { box-shadow: 0 8px 25px rgba(212,175,55,0.4); transform: translateY(-2px); }
+        .btn-confirmar svg { width: 18px; height: 18px; fill: var(--gold-accent); flex-shrink: 0; }
+
+        /* ====== LINTERNAS FLOTANTES (JS) ====== */
+        .lantern { position: absolute; pointer-events: none; animation: float-lantern linear forwards; z-index: 1; opacity: 0; }
+        .lantern svg { width: 100%; height: 100%; fill: #ffdf73; filter: drop-shadow(0 0 12px rgba(255, 200, 50, 0.9)); }
+        @keyframes float-lantern {
+            0% { transform: translateY(110vh) translateX(0) scale(0.6) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-20vh) translateX(50px) scale(1) rotate(15deg); opacity: 0; }
+        }
+
+        /* ====== CANVAS Y MUSICA ====== */
+        #glitter-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; opacity: 0; transition: opacity 0.8s; }
+        #glitter-canvas.visible { opacity: 1; }
+        #music-control-btn { position: fixed; bottom: 25px; right: 25px; width: 48px; height: 48px; border-radius: 50%; background: rgba(92,50,110,0.85); border: 1px solid var(--gold-accent); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 999; box-shadow: 0 4px 15px rgba(212,175,55,0.3); opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.3s; }
+        #music-control-btn.visible { opacity: 1; visibility: visible; }
+        #music-control-btn svg { width: 20px; height: 20px; fill: var(--gold-accent); }
+
+        .invitation-footer { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 3px; color: var(--text-muted); margin-top: 40px; font-weight: 600; text-transform: uppercase; text-align: center; }
+        
+        @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+    </style>
+</head>
+<body>
+    <audio id="song" src="assets/song.mp3" loop preload="auto"></audio>
+    <canvas id="glitter-canvas"></canvas>
+    <button id="music-control-btn" onclick="toggleMusic()" aria-label="Control de música">
+        <svg id="music-icon" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+
+    <!-- SOBRE -->
+    <div id="envelope-screen">
+        <!-- Estrellas mágicas -->
+        <div id="env-stars" style="position:absolute;inset:0;overflow:hidden;"></div>
+
+        <div class="envelope-wrapper" id="envelopeWrapperNew">
+            <div class="letter-peek">
+                <div class="letter-peek-inner">
+                    <div class="letter-peek-name">Johari</div>
+                    <div class="letter-peek-date">17 · Oct · 2026</div>
+                </div>
+            </div>
+            <div class="envelope-body">
+                <svg class="env-svg-main" viewBox="0 0 310 210" fill="none">
+                    <defs>
+                        <linearGradient id="goldGrad2" x1="0" y1="0" x2="310" y2="210">
+                            <stop offset="0%" stop-color="#fff5cc"/><stop offset="50%" stop-color="#d4af37"/><stop offset="100%" stop-color="#9e7f1e"/>
+                        </linearGradient>
+                        <linearGradient id="envBase2" x1="0" y1="0" x2="0" y2="210">
+                            <stop offset="0%" stop-color="#3c1e48"/><stop offset="100%" stop-color="#2a1235"/>
+                        </linearGradient>
+                        <linearGradient id="envLeft2" x1="0" y1="0" x2="155" y2="105">
+                            <stop offset="0%" stop-color="#4a2559"/><stop offset="100%" stop-color="#331840"/>
+                        </linearGradient>
+                        <linearGradient id="envRight2" x1="310" y1="0" x2="155" y2="105">
+                            <stop offset="0%" stop-color="#401f4d"/><stop offset="100%" stop-color="#2b1436"/>
+                        </linearGradient>
+                        <linearGradient id="envBottom2" x1="155" y1="210" x2="155" y2="130">
+                            <stop offset="0%" stop-color="#552c66"/><stop offset="100%" stop-color="#3c1e48"/>
+                        </linearGradient>
+                        <linearGradient id="flapGrad2" x1="0" y1="0" x2="310" y2="140">
+                            <stop offset="0%" stop-color="#5c326e"/><stop offset="100%" stop-color="#3c1e48"/>
+                        </linearGradient>
+                    </defs>
+                    <rect width="310" height="210" rx="5" fill="url(#envBase2)"/>
+                    <rect x="0.4" y="0.4" width="309.2" height="209.2" rx="4.6" stroke="url(#goldGrad2)" stroke-width="1.2" fill="none" opacity="0.8"/>
+                    <polygon points="0,0 155,105 0,210" fill="url(#envLeft2)"/>
+                    <polygon points="310,0 155,105 310,210" fill="url(#envRight2)"/>
+                    <polygon points="0,210 155,105 310,210" fill="url(#envBottom2)"/>
+                    <line x1="0" y1="0" x2="155" y2="105" stroke="url(#goldGrad2)" stroke-width="1" opacity="0.5"/>
+                    <line x1="310" y1="0" x2="155" y2="105" stroke="url(#goldGrad2)" stroke-width="1" opacity="0.5"/>
+                    <line x1="0" y1="210" x2="155" y2="105" stroke="url(#goldGrad2)" stroke-width="1" opacity="0.4"/>
+                    <line x1="310" y1="210" x2="155" y2="105" stroke="url(#goldGrad2)" stroke-width="1" opacity="0.4"/>
+                    
+                    <g class="env-flap-group" id="envFlapMain">
+                        <polygon points="0,0 155,125 310,0" fill="url(#flapGrad2)"/>
+                        <polyline points="0,0 155,125 310,0" stroke="url(#goldGrad2)" stroke-width="1.5" fill="none" opacity="0.8"/>
+                    </g>
+                </svg>
+                <div class="env-name-label">Johari</div>
+                <div class="env-date-label">Mis XV Años &nbsp;·&nbsp; 2026</div>
+
+                <div class="wax-seal">
+                    <svg viewBox="0 0 62 62">
+                        <defs>
+                            <radialGradient id="sealGrad" cx="38%" cy="32%" r="65%">
+                                <stop offset="0%" stop-color="#ffe699"/><stop offset="40%" stop-color="#d4af37"/><stop offset="100%" stop-color="#8a6d1c"/>
+                            </radialGradient>
+                        </defs>
+                        <path d="M31 3 L34 9 L40 6 L41 13 L48 12 L47 19 L54 20 L51 26 L57 30 L52 34 L56 40 L50 42 L51 49 L44 48 L42 55 L36 52 L31 58 L26 52 L20 55 L18 48 L11 49 L12 42 L6 40 L10 34 L5 30 L11 26 L8 20 L15 19 L14 12 L21 13 L22 6 L28 9 Z" fill="url(#sealGrad)"/>
+                        <circle cx="31" cy="31" r="18" fill="rgba(0,0,0,0.1)"/>
+                        <!-- Corona/Sol de Rapunzel simplificado -->
+                        <g transform="translate(31,31)" fill="#fff" opacity="0.6">
+                            <circle cx="0" cy="0" r="4"/>
+                            <path d="M0,-12 L2,-6 L8,-8 L4,-3 L10,0 L4,3 L8,8 L2,6 L0,12 L-2,6 L-8,8 L-4,3 L-10,0 L-4,-3 L-8,-8 L-2,-6 Z"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="hint-text">Toca para abrir</div>
+    </div>
+
+    <!-- INVITACION PRINCIPAL -->
+    <main id="main-invitation">
+        <div id="lanterns-container" style="position:fixed; top:0; left:0; width:100%; height:100%; overflow:hidden; pointer-events:none; z-index:-1;"></div>
+
+        <div class="invitation-frame">
+
+            <!-- INTRO -->
+            <div class="anim-section">
+                <div class="section-tag">Mis XV Años</div>
+                <h1 class="main-title">Johari</h1>
+                <p class="phrase" style="margin-top: 15px;">Con la bendición de Dios y el amor que mi familia me ha dado, me siento feliz de llegar a este momento de mi vida, el momento que dejará atrás mi infancia y comenzaré una nueva etapa; es mi deseo que compartan conmigo la alegría de mis XV años.</p>
+            </div>
+
+            <!-- DIVIDER LINTERNA -->
+            <div class="anim-section">
+                <div class="divider-ornate">
+                    <svg viewBox="0 0 24 24"><path d="M8 2h8v2H8V2zm1.5 3h5v12h-5V5zM6 18h12v2H6v-2zm3-10h6v1H9V8zm0 3h6v1H9v-1z"/></svg>
+                </div>
+            </div>
+
+            <!-- PADRES Y PADRINOS -->
+            <div class="anim-section">
+                <div class="info-label">Mis Padres</div>
+                <div class="family-names">Stefani Chantal Aranda Mora</div>
+                
+                <div class="info-label" style="margin-top: 15px;">Mis Padrinos</div>
+                <div class="family-names">Jorge Leonardo Aranda Mora<br>Carmina Díaz Bravo</div>
+
+                <div class="info-label" style="margin-top: 15px;">Mis Abuelos</div>
+                <div class="family-names">Pedro Aranda Camacho<br>Columba Mora Carrillo</div>
+            </div>
+
+            <div class="anim-section">
+                <div class="divider-ornate">
+                    <svg viewBox="0 0 24 24"><path d="M8 2h8v2H8V2zm1.5 3h5v12h-5V5zM6 18h12v2H6v-2zm3-10h6v1H9V8zm0 3h6v1H9v-1z"/></svg>
+                </div>
+            </div>
+
+            <!-- FECHA Y COUNTDOWN -->
+            <div class="anim-section">
+                <div class="section-heading">Falta muy poco</div>
+                <div class="countdown-grid" id="countdown-timer">
+                    <div class="countdown-item"><span class="countdown-number" id="days">00</span><span class="countdown-label">Días</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="hours">00</span><span class="countdown-label">Hrs</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="minutes">00</span><span class="countdown-label">Min</span></div>
+                    <div class="countdown-item"><span class="countdown-number" id="seconds">00</span><span class="countdown-label">Seg</span></div>
+                </div>
+            </div>
+
+            <!-- CALENDARIO -->
+            <div class="anim-section" style="margin-top: 30px;">
+                <div class="section-heading-sm">Guarda la Fecha</div>
+                <div style="font-family:'Cinzel',serif; font-size:24px; font-weight:400; color:var(--text-deep); letter-spacing:4px;">17 · OCT · 2026</div>
+                <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; color:var(--text-muted); margin-top:5px;">Sábado</div>
+                
+                <div class="calendar-widget">
+                    <div class="calendar-header">
+                        <div class="calendar-year">2026</div>
+                        <div class="calendar-month">Octubre</div>
+                    </div>
+                    <div class="calendar-days-header">
+                        <span class="calendar-day-name">Dom</span><span class="calendar-day-name">Lun</span><span class="calendar-day-name">Mar</span><span class="calendar-day-name">Mié</span><span class="calendar-day-name">Jue</span><span class="calendar-day-name">Vie</span><span class="calendar-day-name">Sáb</span>
+                    </div>
+                    <!-- Octubre 2026 empieza en Jueves -->
+                    <div class="calendar-grid">
+                        <span class="cal-day empty"></span><span class="cal-day empty"></span><span class="cal-day empty"></span><span class="cal-day empty"></span>
+                        <span class="cal-day">1</span><span class="cal-day">2</span><span class="cal-day">3</span>
+                        <span class="cal-day">4</span><span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span><span class="cal-day">8</span><span class="cal-day">9</span><span class="cal-day">10</span>
+                        <span class="cal-day">11</span><span class="cal-day">12</span><span class="cal-day">13</span><span class="cal-day">14</span><span class="cal-day">15</span><span class="cal-day">16</span><span class="cal-day highlight">17</span>
+                        <span class="cal-day">18</span><span class="cal-day">19</span><span class="cal-day">20</span><span class="cal-day">21</span><span class="cal-day">22</span><span class="cal-day">23</span><span class="cal-day">24</span>
+                        <span class="cal-day">25</span><span class="cal-day">26</span><span class="cal-day">27</span><span class="cal-day">28</span><span class="cal-day">29</span><span class="cal-day">30</span><span class="cal-day">31</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anim-section">
+                <div class="divider-ornate">
+                    <svg viewBox="0 0 24 24"><path d="M8 2h8v2H8V2zm1.5 3h5v12h-5V5zM6 18h12v2H6v-2zm3-10h6v1H9V8zm0 3h6v1H9v-1z"/></svg>
+                </div>
+            </div>
+
+            <!-- UBICACIONES E ITINERARIO -->
+            <div class="anim-section">
+                <div class="section-heading">Dónde y Cuándo</div>
+                
+                <!-- Timeline / Itinerario -->
+                <div class="itinerario-timeline">
+                    <div class="itin-row">
+                        <span class="itin-hora">7:00 P.M.</span>
+                        <div class="itin-node"></div>
+                        <div class="itin-evento"><span class="itin-evento-nombre">Misa</span></div>
+                    </div>
+                    <div class="itin-row">
+                        <span class="itin-hora">8:30 P.M.</span>
+                        <div class="itin-node"></div>
+                        <div class="itin-evento"><span class="itin-evento-nombre">Recepción</span></div>
+                    </div>
+                </div>
+
+                <!-- Mapas -->
+                <div class="map-card">
+                    <div class="map-card-header">
+                        <span class="map-card-tipo">Ceremonia Religiosa</span>
+                        <span class="map-card-nombre">Parroquia San José Obrero</span>
+                    </div>
+                    <div class="map-card-body">
+                        <div class="map-wrapper">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.0118515452355!2d-96.12979671737408!3d19.15095850340015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c341114e4e7ba3%3A0x10161254ba3a310b!2sParroquia%20San%20Jose%20Obrero!5e0!3m2!1ses-419!2smx!4v1784571972834!5m2!1ses-419!2smx" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                        </div>
+                        <a href="https://maps.app.goo.gl/t7dBdqGuHqMzqwVY9" target="_blank" class="btn-confirmar" style="margin-top: 15px;">Abrir en Maps</a>
+                    </div>
+                </div>
+
+                <div class="map-card">
+                    <div class="map-card-header">
+                        <span class="map-card-tipo">Recepción</span>
+                        <span class="map-card-nombre">Salón de Eventos</span>
+                    </div>
+                    <div class="map-card-body">
+                        <div class="map-card-direccion">Calle 18 #16 Col. Manuel Nieto</div>
+                        <div class="map-wrapper">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1884.5386204369086!2d-96.1221266613321!3d19.148095929332676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c3411a829266f3%3A0xf94afa39901f0d88!2sC.%2018%2016%2C%20Manuel%20Nieto%2C%2094296%20Boca%20del%20R%C3%ADo%2C%20Ver.!5e0!3m2!1ses-419!2smx!4v1784572049123!5m2!1ses-419!2smx" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                        </div>
+                        <a href="https://maps.app.goo.gl/FjeLcnU5cjc3zaeF7" target="_blank" class="btn-confirmar" style="margin-top: 15px;">Abrir en Maps</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anim-section">
+                <div class="divider-ornate">
+                    <svg viewBox="0 0 24 24"><path d="M8 2h8v2H8V2zm1.5 3h5v12h-5V5zM6 18h12v2H6v-2zm3-10h6v1H9V8zm0 3h6v1H9v-1z"/></svg>
+                </div>
+            </div>
+
+            <!-- VESTIMENTA -->
+            <div class="anim-section">
+                <div class="section-heading">Código de Vestimenta</div>
+                <div style="font-family:'Cinzel',serif; font-size:22px; font-weight:600; letter-spacing:5px; color:var(--gold-accent); margin-top:2px;">Formal</div>
+                <p class="phrase" style="margin-top: 10px; font-size: 17px;">Con mucho cariño, te pedimos reservar el color lila y morado para la Quinceañera.</p>
+                <div style="display:flex; justify-content:center; gap:25px; margin-top:10px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                        <svg viewBox="0 0 24 24" style="width:32px; height:32px; fill:var(--primary-purple);"><path d="M16 2l-1 3H9L8 2H4l2 5v13h12V7l2-5h-4M9.5 10a1.5 1.5 0 0 1 1.5 1.5A1.5 1.5 0 0 1 9.5 13 1.5 1.5 0 0 1 8 11.5 1.5 1.5 0 0 1 9.5 10m5 0a1.5 1.5 0 0 1 1.5 1.5A1.5 1.5 0 0 1 14.5 13 1.5 1.5 0 0 1 13 11.5 1.5 1.5 0 0 1 14.5 10Z"/></svg>
+                        <span style="font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:var(--text-deep); text-transform:uppercase; font-weight:600;">Damas</span>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                        <svg viewBox="0 0 24 24" style="width:32px; height:32px; fill:var(--primary-purple);"><path d="M7 2h10l-1.5 8H8.5L7 2M8.5 11l-1 11h9l-1-11H8.5M12 13v4m-2-2h4"/></svg>
+                        <span style="font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:var(--text-deep); text-transform:uppercase; font-weight:600;">Caballeros</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="anim-section">
+                <div class="divider-ornate">
+                    <svg viewBox="0 0 24 24"><path d="M8 2h8v2H8V2zm1.5 3h5v12h-5V5zM6 18h12v2H6v-2zm3-10h6v1H9V8zm0 3h6v1H9v-1z"/></svg>
+                </div>
+            </div>
+
+            <!-- REGALOS -->
+            <div class="anim-section">
+                <div class="section-heading">Mesa de Regalos</div>
+                <p class="phrase">El obsequio de tu preferencia es bienvenido 🎁. Si deseas tener un detalle distinto, contaremos con un buzón para lluvia de sobres ✉️ en la recepción. <br><br> ¡El mejor regalo es contar con tu presencia en este día tan especial!</p>
+            </div>
+
+            <div class="anim-section">
+                <div class="divider-ornate">
+                    <svg viewBox="0 0 24 24"><path d="M8 2h8v2H8V2zm1.5 3h5v12h-5V5zM6 18h12v2H6v-2zm3-10h6v1H9V8zm0 3h6v1H9v-1z"/></svg>
+                </div>
+            </div>
+
+            <!-- CONFIRMACIÓN Y DESEOS (WhatsApp) -->
+            <div class="anim-section">
+                <div class="section-heading">Confirmación y Deseos</div>
+                <p class="phrase">Será un honor contar con tu presencia. Por favor, confirma tu asistencia y déjame tus mejores deseos para esta nueva etapa.</p>
+                
+                <div class="rsvp-input-wrap">
+                    <label class="rsvp-input-label" for="guest-name">Tu Nombre y Mensaje</label>
+                    <textarea id="guest-message" class="rsvp-input" placeholder="Ej. ¡Hola Johari! Confirmo mi asistencia. Te deseo lo mejor..." style="min-height: 100px; resize: vertical; padding-top: 15px;"></textarea>
+                </div>
+                
+                <button onclick="sendViaWhatsApp()" class="btn-confirmar">
+                    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    Enviar por WhatsApp
+                </button>
+            </div>
+
+            <div class="invitation-footer">Diseño Exclusivo • Johari XV</div>
+        </div>
+    </main>
+
+    <script>
+        let isPlaying = false;
+
+        /* ===== GLITTER CANVAS ===== */
+        const canvas = document.getElementById('glitter-canvas');
+        const ctx = canvas.getContext('2d');
+        let glitterParticles = [];
+
+        function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function makeParticle(x, y, burst){
+            return {
+                x, y,
+                vx: (Math.random()-0.5)*(burst?3:0.8),
+                vy: -Math.random()*(burst?3:1) - 0.5,
+                size: Math.random()*(burst?3.5:2)+1,
+                life: burst?1:Math.random()*0.5+0.5,
+                decay: Math.random()*(burst?0.015:0.008)+0.005,
+                color: Math.random()>0.5 ? '212,175,55' : '255,255,255' // Oro y Blanco
+            };
+        }
+        function drawGlitter(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            glitterParticles = glitterParticles.filter(p => p.life > 0);
+            for(const p of glitterParticles){
+                ctx.beginPath();
+                ctx.arc(p.x, p.y - window.scrollY, p.size, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(${p.color},${p.life})`;
+                ctx.fill();
+                p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+            }
+            requestAnimationFrame(drawGlitter);
+        }
+        function startGlitter(){ 
+            canvas.classList.add('visible'); 
+            drawGlitter(); 
+            setInterval(()=>{
+                if(!document.body.classList.contains('content-active')) return;
+                const x = Math.random()*window.innerWidth;
+                const y = Math.random()*window.innerHeight*0.8 + window.scrollY;
+                glitterParticles.push(makeParticle(x, y, false));
+            }, 300);
+        }
+
+        /* ===== SOBRE Y ANIMACION INICIAL ===== */
+        (function generateStars(){
+            const c = document.getElementById('env-stars');
+            if(!c) return;
+            for(let i=0; i<50; i++){
+                const s = document.createElement('div');
+                const size = Math.random()*2+1;
+                s.style.cssText = `position:absolute; width:${size}px; height:${size}px; background:#fff; border-radius:50%; top:${Math.random()*100}%; left:${Math.random()*100}%; opacity:${Math.random()*0.8+0.2}; animation:pulse ${Math.random()*3+2}s infinite alternate;`;
+                c.appendChild(s);
+            }
+        })();
+
+        document.getElementById('envelopeWrapperNew').addEventListener('click', function(){
+            if(this.classList.contains('open')) return;
+            this.classList.add('open');
+            
+            const audio = document.getElementById('song');
+            if(audio) audio.play().then(()=>{ isPlaying=true; updateMusicIcon(); }).catch(()=>{});
+
+            setTimeout(() => {
+                document.getElementById('envelope-screen').classList.add('fade-out');
+                document.body.classList.add('content-active');
+                document.getElementById('music-control-btn').classList.add('visible');
+                startGlitter();
+                spawnLanternsLoop();
+            }, 1400);
+        });
+
+        /* ===== SCROLL ANIMATIONS (INTERSECTION OBSERVER) ===== */
+        document.addEventListener("DOMContentLoaded", () => {
+            const sections = document.querySelectorAll('.anim-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Anima solo la primera vez
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+            
+            sections.forEach(sec => observer.observe(sec));
+        });
+
+        /* ===== LINTERNAS FLOTANTES ===== */
+        function spawnLanternsLoop() {
+            const container = document.getElementById('lanterns-container');
+            setInterval(() => {
+                const lantern = document.createElement('div');
+                lantern.className = 'lantern';
+                const size = Math.random() * 20 + 25; // 25px a 45px
+                const duration = Math.random() * 15 + 15; // 15s a 30s
+                
+                lantern.style.width = `${size}px`;
+                lantern.style.height = `${size * 1.3}px`;
+                lantern.style.left = `${Math.random() * 90}%`;
+                lantern.style.animationDuration = `${duration}s`;
+                
+                // SVG simple de linterna
+                lantern.innerHTML = `<svg viewBox="0 0 24 30"><path d="M4 6 L20 6 L22 26 L2 26 Z" fill="rgba(255, 210, 80, 0.9)"/><path d="M6 2 L18 2 L20 6 L4 6 Z" fill="rgba(212, 175, 55, 0.9)"/><path d="M6 26 L18 26 L16 30 L8 30 Z" fill="rgba(212, 175, 55, 0.9)"/><circle cx="12" cy="18" r="4" fill="#fff" filter="blur(2px)"/></svg>`;
+                
+                container.appendChild(lantern);
+                
+                // Remover del DOM al terminar animación
+                setTimeout(() => { lantern.remove(); }, duration * 1000);
+            }, 1800); // Genera una linterna cada 1.8 segundos
+        }
+
+        /* ===== MUSICA ===== */
+        function toggleMusic(){
+            const audio = document.getElementById('song');
+            if(!audio) return;
+            if(isPlaying){ audio.pause(); isPlaying=false; }
+            else{ audio.play().catch(()=>{}); isPlaying=true; }
+            updateMusicIcon();
+        }
+        function updateMusicIcon(){
+            const icon = document.getElementById('music-icon');
+            if(icon) icon.innerHTML = isPlaying ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' : '<path d="M8 5v14l11-7z"/>';
+        }
+
+        /* ===== WHATSAPP (RSVP & DESEOS) ===== */
+        function sendViaWhatsApp(){
+            const msgInput = document.getElementById('guest-message');
+            const userMsg = msgInput.value.trim() || "¡Hola! Confirmo mi asistencia a los XV Años de Johari.";
+            
+            const finalMessage = `${userMsg}\n\n- Mensaje enviado desde la Invitación Digital.`;
+            
+            // Número proporcionado: 2294084815 (Código país 52 para México)
+            const whatsappUrl = `https://wa.me/522294084815?text=${encodeURIComponent(finalMessage)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        /* ===== CUENTA REGRESIVA ===== */
+        const targetDate = new Date("October 17, 2026 00:00:00").getTime();
+        setInterval(()=>{
+            const now = Date.now();
+            const left = targetDate - now;
+            if(left < 0){ document.getElementById("countdown-timer").innerHTML = "<div style='font-family:\"Cinzel\",serif;color:var(--primary-purple);font-size:18px;'>¡El día esperado ha llegado!</div>"; return; }
+            
+            const d = Math.floor(left / 86400000);
+            const h = Math.floor((left % 86400000) / 3600000);
+            const m = Math.floor((left % 3600000) / 60000);
+            const s = Math.floor((left % 60000) / 1000);
+            
+            document.getElementById("days").innerText = d < 10 ? "0"+d : d;
+            document.getElementById("hours").innerText = h < 10 ? "0"+h : h;
+            document.getElementById("minutes").innerText = m < 10 ? "0"+m : m;
+            document.getElementById("seconds").innerText = s < 10 ? "0"+s : s;
+        }, 1000);
+    </script>
+</body>
+</html>
