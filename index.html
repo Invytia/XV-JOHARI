@@ -258,7 +258,7 @@
             box-shadow: 0 20px 40px rgba(74, 44, 93, 0.15);
             position: relative;
         }
-        .scattered-photo img { width: 100%; display: block; }
+        .scattered-photo img { width: 100%; display: block; object-fit: cover; }
         .scattered-photo::after { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(255,255,255,0.7); pointer-events: none; border-radius: 8px; }
 
         /* ====== COUNTDOWN ====== */
@@ -463,8 +463,9 @@
                 <div class="frame-sparkle"><svg width="25" height="25" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.9"/></svg></div>
                 <div class="frame-sparkle"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z" fill="#d4af37" opacity="0.85"/></svg></div>
 
+                <!-- Foto 1: Hero -->
                 <div class="hero-photo-wrap anim-zoom">
-                    <img src="" alt="Foto Johari" class="hero-photo" style="background: rgba(150,97,168,0.1);">
+                    <img src="assets/1.jpg" alt="Foto Johari" class="hero-photo" style="background: rgba(150,97,168,0.1);">
                 </div>
 
                 <div class="section-tag anim-fade-up">Mis XV Años</div>
@@ -492,8 +493,9 @@
                     <div class="family-names">Jorge Leonardo Aranda Mora<br>Carmina Díaz Bravo</div>
                 </div>
 
+                <!-- Foto 2: Sección de Familia -->
                 <div class="scattered-photo anim-zoom delay-3" style="margin-top: 50px;">
-                    <img src="" alt="Sesión Johari" style="min-height: 250px; background: rgba(150,97,168,0.1);">
+                    <img src="assets/2.jpg" alt="Sesión Johari" style="min-height: 250px; background: rgba(150,97,168,0.1);">
                 </div>
             </div>
         </section>
@@ -533,6 +535,11 @@
                     <div class="countdown-item"><span class="countdown-number" id="hours">00</span><span class="countdown-label">Hrs</span></div>
                     <div class="countdown-item"><span class="countdown-number" id="minutes">00</span><span class="countdown-label">Min</span></div>
                     <div class="countdown-item"><span class="countdown-number" id="seconds">00</span><span class="countdown-label">Seg</span></div>
+                </div>
+
+                <!-- Foto 3: Al final de la sección Fecha -->
+                <div class="scattered-photo anim-zoom delay-3" style="margin-top: 50px;">
+                    <img src="assets/3.jpg" alt="Sesión Johari" style="min-height: 250px; background: rgba(212,175,55,0.1);">
                 </div>
             </div>
         </section>
@@ -579,8 +586,9 @@
                 <div class="anim-zoom delay-1" style="font-family:'Cinzel',serif;font-size:32px;font-weight:700;letter-spacing:8px;color:var(--text-deep);margin-top:5px;">Formal</div>
                 <div class="anim-fade-up delay-2" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:var(--text-lilac);font-weight:600;margin-top:12px; padding: 0 15px;">Se reserva el color Lila y Morado para la festejada.</div>
 
+                <!-- Foto 4: Vestimenta -->
                 <div class="scattered-photo anim-zoom delay-3" style="margin: 50px 0;">
-                    <img src="" alt="Sesión Johari" style="min-height: 250px; background: rgba(212,175,55,0.1);">
+                    <img src="assets/4.jpg" alt="Sesión Johari" style="min-height: 250px; background: rgba(212,175,55,0.1);">
                 </div>
 
                 <div class="divider-ornate anim-fade-left"><div class="divider-ornate-diamond"></div></div>
@@ -620,6 +628,11 @@
                 <div class="section-heading anim-fade-down">Galería en Vivo</div>
                 <p class="rsvp-intro anim-fade-up delay-1" style="margin-bottom: 20px;">Ayúdanos a capturar los mejores momentos de la fiesta. Toca el botón para subir tus fotos y videos durante el evento.</p>
                 
+                <!-- Foto 5: Galería en vivo -->
+                <div class="scattered-photo anim-zoom delay-3" style="margin: 30px 0 40px 0;">
+                    <img src="assets/5.jpg" alt="Sesión Johari" style="min-height: 250px; background: rgba(150,97,168,0.1);">
+                </div>
+
                 <a href="https://drive.google.com/drive/folders/1ih9oPiWwxGLFQdzkjwtIX5y1jVuwCeL-?usp=sharing" target="_blank" style="text-decoration: none;" class="anim-fade-up delay-2">
                     <button class="btn-confirmar" style="width: 100%;">
                         <svg viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm8 3c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 8c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"/></svg>
