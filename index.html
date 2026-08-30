@@ -297,6 +297,15 @@
 
         .map-wrapper { width:100%;height:220px;border-radius:12px;overflow:hidden;border:1px solid rgba(212,175,55,0.4); margin-bottom: 20px; box-shadow: 0 15px 35px rgba(74, 44, 93, 0.15); position: relative; z-index: 20;}
 
+        /* ====== ITINERARIO ====== */
+        .timeline-container { position: relative; max-width: 280px; margin: 40px auto 0 auto; padding-left: 20px; text-align: left; }
+        .timeline-container::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 1px; background: linear-gradient(to bottom, transparent, rgba(212,175,55,0.6) 10%, rgba(212,175,55,0.6) 90%, transparent); }
+        .timeline-item { position: relative; margin-bottom: 35px; }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-dot { position: absolute; left: -24.5px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--text-lilac); border: 2px solid var(--bg-main); box-shadow: 0 0 0 2px var(--text-rose); z-index: 2; }
+        .timeline-time { font-family: 'Cinzel', serif; font-size: 13px; color: var(--text-rose); font-weight: 700; letter-spacing: 2px; text-transform: uppercase;}
+        .timeline-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-style: italic; color: var(--text-deep); font-weight: 600; margin-top: 4px; line-height: 1.2; }
+
         /* ====== MESA DE REGALOS ====== */
         .regalo-container { text-align: center; margin-top: 30px; }
         .regalo-icon { width: 50px; height: 50px; margin: 0 auto 20px auto; display: block; stroke: var(--text-rose); fill: none; }
@@ -575,6 +584,41 @@
                     <a href="https://maps.app.goo.gl/FjeLcnU5cjc3zaeF7" target="_blank" style="text-decoration:none;" class="anim-fade-up">
                         <button class="btn-accion">Ver en Google Maps</button>
                     </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4.5: ITINERARIO (FONDO BASE) -->
+        <section class="full-section">
+            <div class="seccion-abierta">
+                <div class="section-heading anim-fade-down">Itinerario</div>
+                
+                <div class="timeline-container">
+                    <div class="timeline-item anim-fade-right delay-1">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">7:00 P.M.</div>
+                        <div class="timeline-title">Ceremonia Religiosa</div>
+                    </div>
+                    <div class="timeline-item anim-fade-right delay-2">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">8:30 P.M.</div>
+                        <div class="timeline-title">Recepción</div>
+                    </div>
+                    <div class="timeline-item anim-fade-right delay-3">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">9:00 P.M.</div>
+                        <div class="timeline-title">Cena</div>
+                    </div>
+                    <div class="timeline-item anim-fade-right delay-1">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">9:30 P.M.</div>
+                        <div class="timeline-title">Vals</div>
+                    </div>
+                    <div class="timeline-item anim-fade-right delay-2">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-time">10:30 P.M.</div>
+                        <div class="timeline-title">Show Sorpresa</div>
+                    </div>
                 </div>
             </div>
         </section>
